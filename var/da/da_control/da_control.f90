@@ -6,6 +6,7 @@ module da_control
 
    use module_driver_constants, only : max_domains, max_eta, max_moves, max_bogus, &
                                        max_outer_iterations, max_instruments, max_plevs, &
+                                       max_zlevs, &
 #if (WRF_CHEM == 1)
                                        max_trackchem, &
 #endif
