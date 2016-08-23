@@ -64,6 +64,10 @@ subroutine da_dgn( grid, cv_size, xbx, be, iv, xhat, cv, ob, config_flags, ja_to
    grat = (sqrt(5.D0) - 1.D0) / 2.D0 ! Golden Ratio
 
    ja = ja_total
+   jb = 0.D0
+   jc = 0.D0
+   jd = 0.D0
+
    eta_a = 0.D0
    eta_b = 1.D0
    eta_c = eta_b - grat * (eta_b - eta_a)
@@ -73,9 +77,13 @@ subroutine da_dgn( grid, cv_size, xbx, be, iv, xhat, cv, ob, config_flags, ja_to
    ! Could use jb/ja > 1 as criteria for needing DGN
    call da_evaluate_j( grid, config_flags, cv_size, be%cv%size_jb, xbx, be, iv, xhat, cv, ob, &
                        cv_s_ant, cv_e_ant, cv_s_bb, cv_e_bb, eta_b, jb)
+   write(unit=stdout,fmt='("DGN: eta_b          jb")')
+   write(unit=stdout,fmt='("DGN:",1F6.3,1F11.3)') eta_b,jb
 
    call da_evaluate_j( grid, config_flags, cv_size, be%cv%size_jb, xbx, be, iv, xhat, cv, ob, &
                        cv_s_ant, cv_e_ant, cv_s_bb, cv_e_bb, eta_c, jc)
+   write(unit=stdout,fmt='("DGN: eta_c          jc")')
+   write(unit=stdout,fmt='("DGN:",1F6.3,1F11.3)') eta_c,jc
 
    eta = eta_d
 
@@ -83,9 +91,6 @@ subroutine da_dgn( grid, cv_size, xbx, be, iv, xhat, cv, ob, config_flags, ja_to
    itgold = 0
    do while (eta_b - eta_a .gt. tol)
       itgold = itgold + 1
-      write(unit=stdout,fmt='("DGN: i  eta_a eta_b       ja          jb")')
-      write(unit=stdout,fmt='("DGN:",I4,2F6.3,2F11.3)') itgold,eta_a,eta_b,ja,jb
-
       call da_evaluate_j( grid, config_flags, cv_size, be%cv%size_jb, xbx, be, iv, xhat, cv, ob, &
                           cv_s_ant, cv_e_ant, cv_s_bb, cv_e_bb, eta, jout)
       if (branch .eq. 1) then
@@ -93,9 +98,13 @@ subroutine da_dgn( grid, cv_size, xbx, be, iv, xhat, cv, ob, config_flags, ja_to
       else
          jd = jout
       end if
+      write(unit=stdout,fmt='("DGN: i  eta_a eta_b       ja          jb          jc          jd")')
+      write(unit=stdout,fmt='("DGN:",I4,2F6.3,4F11.3)') itgold,eta_a,eta_b,ja,jb,jc,jd
+
 
       if (jc .lt. jd) then
          eta_b = eta_d
+         jb = jd
          eta_d = eta_c
          jd = jc
          eta_c = eta_b - grat * (eta_b - eta_a)
@@ -103,6 +112,7 @@ subroutine da_dgn( grid, cv_size, xbx, be, iv, xhat, cv, ob, config_flags, ja_to
          branch = 1
       else
          eta_a = eta_c
+         ja = jc
          eta_c = eta_d
          jc = jd
          eta_d = eta_a + grat * (eta_b - eta_a)
