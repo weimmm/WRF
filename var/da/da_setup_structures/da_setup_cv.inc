@@ -10,6 +10,9 @@ subroutine da_setup_cv(be)
 
    integer :: iy, jx   ! Local horizontal domain dimensions.
    integer :: ij       ! Product of horizontal dims.
+#if (WRF_CHEM == 1)
+   integer :: ic
+#endif
 
    if (trace_use) call da_trace_entry("da_setup_cv")
 

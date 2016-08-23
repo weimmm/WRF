@@ -556,7 +556,7 @@ subroutine da_jo_and_grady(iv, re, jot, jo, jo_grad_y &
       jo_airsr = 0.0
    end if
 
-if (WRF_CHEM == 1)
+#if (WRF_CHEM == 1)
    if ( iv%info(chem_surf)%nlocal > 0 ) then
        call da_jo_and_grady_chem_surf(iv, re, jo, jo_grad_y)
        jo_chem_surf = jo%chem_surf
