@@ -302,8 +302,8 @@ subroutine da_vv_to_cv(vv, xp, mzs, cv_size, rcv &
       ix = ie-is+1
       jy = je-js+1
 #ifdef CLOUD_CV
-      ma = mzs(12)
-      mb = mzs(13)
+      ma = mzs(14)
+      mb = mzs(15)
 #else
       ma = mzs(8)
       mb = mzs(9)
