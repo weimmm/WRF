@@ -14,7 +14,7 @@ module da_setup_structures
 #endif
       multi_level_type,each_level_type, da_allocate_observations_rain
    use da_wrf_interfaces, only : wrf_debug
-   use da_control, only : trace_use,vert_evalue,stdout,rootproc, &
+   use da_control, only : trace_use,vert_evalue,stdout,rootproc, myproc, &
       analysis_date,coarse_ix,coarse_ds,map_projection,coarse_jy, c2,dsm,phic, &
       pole, cone_factor, start_x,base_pres,ptop,psi1,start_y, base_lapse,base_temp,truelat2_3dv, &
       truelat1_3dv,xlonc,t0,num_fft_factors,pi,print_detail_spectral, global, print_detail_obs, &
@@ -75,7 +75,8 @@ module da_setup_structures
       psi_chi_factor, psi_t_factor, psi_ps_factor, psi_rh_factor, &
       chi_u_t_factor, chi_u_ps_factor,chi_u_rh_factor, t_u_rh_factor, ps_u_rh_factor, &
       interpolate_stats, be_eta, thin_rainobs, fgat_rain_flags, use_iasiobs, &
-      use_seviriobs, jds_int, jde_int, anal_type_hybrid_dual_res, use_amsr2obs, nrange
+      use_seviriobs, jds_int, jde_int, anal_type_hybrid_dual_res, use_amsr2obs, nrange, use_4denvar
+   use da_control, only: rden_bin, use_lsac
 #if (WRF_CHEM == 1)
    use module_state_description, only : num_chem_surf, num_chem_acft, &
       num_scaleant, num_scalebb, PARAM_FIRST_SCALAR
@@ -91,7 +92,8 @@ module da_setup_structures
 #if (WRF_CHEM == 1)
       da_read_obs_chem, &
 #endif
-      da_read_obs_bufrgpsro, da_scan_obs_rain, da_read_obs_rain
+      da_read_obs_bufrgpsro, da_scan_obs_rain, da_read_obs_rain, &
+      da_read_obs_lsac, da_scan_obs_lsac
    use da_par_util1, only : da_proc_sum_real, da_proc_sum_int, da_proc_sum_ints
    use da_par_util, only : da_patch_to_global
    use da_lapack, only : dsyev
@@ -142,6 +144,7 @@ contains
 #include "da_setup_cv.inc"
 #include "da_chgvres.inc"
 #include "da_setup_flow_predictors.inc"
+#include "da_setup_flow_predictors_para_read_opt1.inc"
 #include "da_setup_obs_structures.inc"
 #include "da_setup_obs_structures_ascii.inc"
 #include "da_setup_obs_structures_bufr.inc"

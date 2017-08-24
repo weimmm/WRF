@@ -29,7 +29,7 @@ module da_obs
 #if (WRF_CHEM == 1)
       num_platform, chem_surf, chem_acft, &
 #endif
-      write_mod_filtered_obs, radiance, use_varbc, obs_names
+      write_mod_filtered_obs, radiance, use_varbc, obs_names, q_error_options
    ! use_crtm_kmatrix,use_crtm_kmatrix_fast
 #if (WRF_CHEM == 1)
    use module_state_description, only : num_chem_surf, num_chem_acft
