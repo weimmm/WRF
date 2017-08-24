@@ -48,23 +48,33 @@ subroutine da_setup_cv(be)
       be % cv % size3 = ij * be % v3 % mz
       be % cv % size4 = ij * be % v4 % mz
       be % cv % size5 = ij * be % v5 % mz
-#ifdef CLOUD_CV
-      be % cv % size6 = ij * be % v6 % mz
-      be % cv % size7 = ij * be % v7 % mz
-      be % cv % size8 = ij * be % v8 % mz
-      be % cv % size9 = ij * be % v9 % mz
-      be % cv % size10= ij * be % v10 % mz
-      be % cv % size11i= ij * be % v11 % mz
-#endif
+
+      if ( cloud_cv_options >= 2 ) then
+         be % cv % size6 = ij * be % v6 % mz
+         be % cv % size7 = ij * be % v7 % mz
+         be % cv % size8 = ij * be % v8 % mz
+         be % cv % size9 = ij * be % v9 % mz
+         be % cv % size10= ij * be % v10 % mz
+      end if
+      if ( use_cv_w ) then
+         be % cv % size11i= ij * be % v11 % mz
+      end if
+
    end if
-#ifdef CLOUD_CV
-   be % cv % size_jb = be % cv % size1 + be % cv % size2 + be % cv % size3 + &
-      be % cv % size4 + be % cv % size5+ be % cv % size6 + be % cv % size7 + &
-      be % cv % size8 + be % cv % size9+  be % cv % size10 +  be % cv % size11i
-#else
+
    be % cv % size_jb = be % cv % size1 + be % cv % size2 + be % cv % size3 + &
       be % cv % size4 + be % cv % size5
-#endif   
+
+   if ( cloud_cv_options >= 2 ) then
+      be % cv % size_jb = be % cv % size_jb + be % cv % size6 + &
+         be % cv % size7 + be % cv % size8 + be % cv % size9 + &
+         be % cv % size10
+   end if
+
+   if ( use_cv_w ) then
+      be % cv % size_jb = be % cv % size_jb + be % cv % size11i
+   end if
+
    !--------------------------------------------------------------
    ! [1.1] Define 4D-Var lateral boundary condition control variable size:
    !--------------------------------------------------------------
@@ -112,14 +122,16 @@ subroutine da_setup_cv(be)
       else
          ij = size(be%wsd,1)*size(be%wsd,2)
       endif
-#ifdef CLOUD_CV
       cv_size_domain_jb = ij * (be % v1 % mz + be % v2 % mz + be % v3 % mz + &
              be % v4 % mz + be % v5 % mz + be % v6 % mz + be % v7 % mz + &
              be % v8 % mz + be % v9 % mz + be % v10 % mz + be % v11 % mz )
-#else
-      cv_size_domain_jb = ij * (be % v1 % mz + be % v2 % mz + be % v3 % mz + &
-                                 be % v4 % mz + be % v5 % mz)
-#endif
+      if ( cloud_cv_options >= 2 ) then
+         cv_size_domain_jb = cv_size_domain_jb + ij * (be % v6 % mz + &
+             be % v7 % mz + be % v8 % mz + be % v9 % mz + be % v10 % mz )
+      end if
+      if ( use_cv_w ) then
+         cv_size_domain_jb = cv_size_domain_jb + ij * be % v11 % mz
+      end if
       cv_size_domain_je = ij * be % alpha % mz * be % ne
       if ( var4d ) then
          cv_size_domain_jl = cv_size_domain_jb 
@@ -135,17 +147,29 @@ subroutine da_setup_cv(be)
 
       ij = iy * jx              ! cv space size same as state space size
 
+!      be % cv % sizechem (:) = 0
+!      do ic = PARAM_FIRST_SCALAR, num_chem
+!         be % cv % sizechem (ic) = ij * be % alpha_chem(ic) % mz
+!      end do
+!      be % cv % size_jb = be % cv % size_jb + sum( be % cv % sizechem (:) )
+
       be % cv % sizeant (:) = 0
       do ic = PARAM_FIRST_SCALAR, num_scaleant
          be % cv % sizeant (ic) = ij * be % alpha_ant_chem(ic) % mz
       end do
+      be % cv % size_jb = be % cv % size_jb + sum (be % cv % sizeant (:))
 
       be % cv % sizebb (:) = 0
       do ic = PARAM_FIRST_SCALAR, num_scalebb
          be % cv % sizebb (ic) = ij * be % alpha_bb_chem(ic) % mz
       end do
+      be % cv % size_jb = be % cv % size_jb + sum( be % cv % sizebb (:) )
 
-      be % cv % size_jb = be % cv % size_jb + sum (be % cv % sizeant (:)) + sum( be % cv % sizebb (:) )
+!      be % cv % sizebio (:) = 0
+!      do ic = PARAM_FIRST_SCALAR, num_scalebio
+!         be % cv % sizebio (ic) = ij * be % alpha_bio_chem(ic) % mz
+!      end do
+!      be % cv % size_jb = be % cv % size_jb + sum( be % cv % sizebio (:) )
 #endif
 
    if (trace_use) call da_trace_exit("da_setup_cv")

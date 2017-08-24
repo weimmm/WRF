@@ -36,19 +36,6 @@ subroutine da_calculate_j(it, iter, cv_size, cv_size_jb, cv_size_je, cv_size_jp,
 #endif
    type (y_type)    :: jo_grad_y ! Grad_y(jo)
    real             :: cv_xhat_jb(cv_size_jb), cv_xhat_je(cv_size_je), cv_xhat_jl(cv_size_jl)
-#if (WRF_CHEM != 1)
-#ifdef CLOUD_CV
-   integer          :: mz(13)
-#else
-   integer          :: mz(7)
-#endif
-#else
-#ifdef CLOUD_CV
-   integer          :: mz(15)
-#else
-   integer          :: mz(9)
-#endif
-#endif
    integer          :: ndynopt
    real             :: dtemp1x
    integer          :: i, jj, k
@@ -70,23 +57,6 @@ subroutine da_calculate_j(it, iter, cv_size, cv_size_jb, cv_size_je, cv_size_jp,
    !-------------------------------------------------------------------------
    ! [0.0] initialization:
    !-------------------------------------------------------------------------
-#if (WRF_CHEM != 1)
-#ifdef CLOUD_CV
-   mz = (/ be%v1%mz, be%v2%mz, be%v3%mz, be%v4%mz, be%v5%mz, &
-           be%v6%mz, be%v7%mz, be%v8%mz, be%v9%mz, be%v10%mz, be%v11%mz, be%alpha%mz, be%ne /)
-#else
-   mz = (/ be%v1%mz, be%v2%mz, be%v3%mz, be%v4%mz, be%v5%mz, be%alpha%mz, be%ne /)
-#endif
-#else
-#ifdef CLOUD_CV
-   mz = (/ be%v1%mz, be%v2%mz, be%v3%mz, be%v4%mz, be%v5%mz, &
-           be%v6%mz, be%v7%mz,  be%v8%mz, be%v9%mz, be%v10%mz, be%v11%mz, be%alpha%mz, be%ne,&
-           be%alpha_ant_chem(PARAM_FIRST_SCALAR)%mz, be%alpha_bb_chem(PARAM_FIRST_SCALAR)%mz /)
-#else
-   mz = (/ be%v1%mz, be%v2%mz, be%v3%mz, be%v4%mz, be%v5%mz, be%alpha%mz, be%ne, &
-           be%alpha_ant_chem(PARAM_FIRST_SCALAR)%mz, be%alpha_bb_chem(PARAM_FIRST_SCALAR)%mz /)
-#endif
-#endif
    je_start = cv_size_jb + 1
    je_end   = cv_size_jb + cv_size_je
    jp_start = cv_size_jb + cv_size_je + 1
@@ -179,7 +149,11 @@ subroutine da_calculate_j(it, iter, cv_size, cv_size_jb, cv_size_je, cv_size_jp,
    j % jb = 0.0
    if (cv_size_jb > 0) then
       cv_xhat_jb(1:cv_size_jb) = cv(1:cv_size_jb) + xhat(1:cv_size_jb)
-      j % jb = jb_factor * 0.5 * da_dot_cv(cv_size_jb,  cv_xhat_jb, cv_xhat_jb, grid, mz)
+      j % jb = jb_factor * 0.5 * da_dot_cv(cv_size_jb,  cv_xhat_jb, cv_xhat_jb, grid, be%cv_mz, be%ncv_mz &
+#if (WRF_CHEM == 1)
+               ,be%cv_mz_chem, be%ncv_mz_chem &
+#endif
+               )
    end if
 
    !-------------------------------------------------------------------------
@@ -189,7 +163,11 @@ subroutine da_calculate_j(it, iter, cv_size, cv_size_jb, cv_size_je, cv_size_jp,
    j % je = 0.0
    if (be % ne > 0) then
       cv_xhat_je(1:cv_size_je) = cv(je_start:je_end) + xhat(je_start:je_end)
-      j % je = je_factor * 0.5 * da_dot_cv(cv_size_je, cv_xhat_je, cv_xhat_je, grid, mz)
+      j % je = je_factor * 0.5 * da_dot_cv(cv_size_je, cv_xhat_je, cv_xhat_je, grid, be%cv_mz, be%ncv_mz &
+#if (WRF_CHEM == 1)
+               ,be%cv_mz_chem, be%ncv_mz_chem &
+#endif
+               )
    end if
 
 
@@ -231,7 +209,11 @@ subroutine da_calculate_j(it, iter, cv_size, cv_size_jb, cv_size_je, cv_size_jp,
    if ( var4d ) then
       cv_xhat_jl(1:cv_size_jl) = cv (jl_start:jl_end) + xhat(jl_start:jl_end)
 
-      j % jl = 0.5 * da_dot_cv(cv_size_jl, cv_xhat_jl, cv_xhat_jl, grid, mz)
+      j % jl = 0.5 * da_dot_cv(cv_size_jl, cv_xhat_jl, cv_xhat_jl, grid, be%cv_mz, be%ncv_mz &
+#if (WRF_CHEM == 1)
+               ,be%cv_mz_chem, be%ncv_mz_chem &
+#endif
+               )
 
    endif
 

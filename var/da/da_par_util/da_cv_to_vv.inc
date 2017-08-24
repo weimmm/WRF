@@ -1,9 +1,8 @@
-subroutine da_cv_to_vv (cv_size, rcv, mzs, vv &
+subroutine da_cv_to_vv (cv_size, rcv, mzs, nmzs, vv &
 #if (WRF_CHEM == 1)
-                        ,vch &
+                        ,mzs_chem, nmzs_chem, vch &
 #endif
                         )
-
    !---------------------------------------------------------------------------
    ! Purpose: Fill (local) vv arrays from 1D (local) cv array.
    !---------------------------------------------------------------------------
@@ -12,9 +11,12 @@ subroutine da_cv_to_vv (cv_size, rcv, mzs, vv &
 
    integer,        intent(in)    :: cv_size     ! Length of CV array.
    real,           intent(in)    :: rcv(1:cv_size) ! Control variables v.
-   integer,        intent(in)    :: mzs(:) ! Background error structure levels.
+   integer,        intent(in)    :: nmzs        ! number of cv for mz
+   integer,        intent(in)    :: mzs(nmzs)   ! Background error structure levels.
    type (vp_type), intent(inout) :: vv          ! Grdipt/EOF cv_array.
 #if (WRF_CHEM == 1)
+   integer, optional, intent(in)    :: nmzs_chem             ! chem number of cv for mz
+   integer, optional, intent(in)    :: mzs_chem(nmzs_chem)   ! chem Background error structure levels.
    type (xch_type), optional, intent(inout) :: vch          ! Grdipt/EOF cv_array.
 #endif
 
@@ -27,8 +29,7 @@ subroutine da_cv_to_vv (cv_size, rcv, mzs, vv &
    integer   :: ijm         ! Size of interior of v1 through v5 arrays.
    integer   :: ijmn        ! Size of interior of alpha cv arrays.
 #if (WRF_CHEM == 1)
-   integer   :: ma, mb      ! Max anthro and bioburn time coordinates
-   integer   :: ic          ! chem loop iterator
+   integer   :: ic, offset
 #endif
 
    if (trace_use) call da_trace_entry("da_cv_to_vv")
@@ -93,66 +94,66 @@ subroutine da_cv_to_vv (cv_size, rcv, mzs, vv &
       cv_e = cv_s + ijm - 1
       vv % v5(is:ie,js:je,1:mz) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy,mz/))
    end if
-#ifdef CLOUD_CV
-   ! Fill v6
-   mz = mzs(6)
-   if (mz > 0) then
-      ijm = ix * jy * mz
-      cv_s = cv_e + 1
-      cv_e = cv_s + ijm - 1
-      vv % v6(is:ie,js:je,1:mz) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, mz/))
-   end if
-   ! Fill v7
-   mz = mzs(7)
-   if (mz > 0) then
-      ijm = ix * jy * mz
-      cv_s = cv_e + 1
-      cv_e = cv_s + ijm - 1
-      vv % v7(is:ie,js:je,1:mz) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, mz/))
-   end if
-   ! Fill v8
-   mz = mzs(8)
-   if (mz > 0) then
-      ijm = ix * jy * mz
-      cv_s = cv_e + 1
-      cv_e = cv_s + ijm - 1
-      vv % v8(is:ie,js:je,1:mz) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, mz/))
-   end if
-   ! Fill v9
-   mz = mzs(9)
-   if (mz > 0) then
-      ijm = ix * jy * mz
-      cv_s = cv_e + 1
-      cv_e = cv_s + ijm - 1
-      vv % v9(is:ie,js:je,1:mz) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, mz/))
-   end if
-   ! Fill v10
-   mz = mzs(10)
-   if (mz > 0) then
-      ijm = ix * jy * mz
-      cv_s = cv_e + 1
-      cv_e = cv_s + ijm - 1
-      vv % v10(is:ie,js:je,1:mz) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, mz/))
-   end if
-   ! Fill v11
-   mz = mzs(11)
-   if (mz > 0) then
-      ijm = ix * jy * mz
-      cv_s = cv_e + 1
-      cv_e = cv_s + ijm - 1
-      vv % v11(is:ie,js:je,1:mz) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, mz/))
-   end if
-#endif
+
+   if ( nmzs > 10 ) then
+      ! Fill v6
+      mz = mzs(6)
+      if (mz > 0) then
+         ijm = ix * jy * mz
+         cv_s = cv_e + 1
+         cv_e = cv_s + ijm - 1
+         vv % v6(is:ie,js:je,1:mz) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, mz/))
+      end if
+      ! Fill v7
+      mz = mzs(7)
+      if (mz > 0) then
+         ijm = ix * jy * mz
+         cv_s = cv_e + 1
+         cv_e = cv_s + ijm - 1
+         vv % v7(is:ie,js:je,1:mz) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, mz/))
+      end if
+      ! Fill v8
+      mz = mzs(8)
+      if (mz > 0) then
+         ijm = ix * jy * mz
+         cv_s = cv_e + 1
+         cv_e = cv_s + ijm - 1
+         vv % v8(is:ie,js:je,1:mz) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, mz/))
+      end if
+      ! Fill v9
+      mz = mzs(9)
+      if (mz > 0) then
+         ijm = ix * jy * mz
+         cv_s = cv_e + 1
+         cv_e = cv_s + ijm - 1
+         vv % v9(is:ie,js:je,1:mz) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, mz/))
+      end if
+      ! Fill v10
+      mz = mzs(10)
+      if (mz > 0) then
+         ijm = ix * jy * mz
+         cv_s = cv_e + 1
+         cv_e = cv_s + ijm - 1
+         vv % v10(is:ie,js:je,1:mz) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, mz/))
+      end if
+   end if ! cloud cv
+
+   if ( nmzs == 8 .or. nmzs == 13 ) then
+      ! Fill v11
+      mz = mzs(nmzs-2)
+      if (mz > 0) then
+         ijm = ix * jy * mz
+         cv_s = cv_e + 1
+         cv_e = cv_s + ijm - 1
+         vv % v11(is:ie,js:je,1:mz) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, mz/))
+      end if
+   end if ! w
+
    !--------------------------------------------------------------------------
    ! [2] Transfer components of Je control variable:
    !--------------------------------------------------------------------------
-#ifdef CLOUD_CV
-   mz = mzs(12)
-   ne = mzs(13)
-#else
-   mz = mzs(6)
-   ne = mzs(7)
-#endif
+   mz = mzs(nmzs-1)
+   ne = mzs(nmzs)
    if ( ne > 0 ) then
       ix = ite_int - its_int + 1
       jy = jte_int - jts_int + 1
@@ -164,33 +165,55 @@ subroutine da_cv_to_vv (cv_size, rcv, mzs, vv &
    end if
 
 #if (WRF_CHEM == 1)
-   if (present(vch)) then
+   if (present(mzs_chem) .and. present(nmzs_chem) .and. present(vch)) then
       ix = ie-is+1
       jy = je-js+1
-#ifdef CLOUD_CV
-      ma = mzs(14)
-      mb = mzs(15)
-#else
-      ma = mzs(8)
-      mb = mzs(9)
-#endif
-      if ( ma > 0 ) then
-         ijm = ix * jy * ma
+      offset = 1
+
+!      if ( num_chem >= PARAM_FIRST_SCALAR ) then
+!         mz = mzs_chem(offset)
+!         do ic = PARAM_FIRST_SCALAR, num_chem
+!            ijm = ix * jy * mz
+!            cv_s = cv_e + 1
+!            cv_e = cv_s + ijm - 1
+!            vch % alpha_chem(is:ie,js:je,1:ma,ic) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, ma/))
+!         end do
+!         offset = offset + 1
+!      end if
+
+      if ( num_scaleant >= PARAM_FIRST_SCALAR ) then
+         mz = mzs_chem(offset)
          do ic = PARAM_FIRST_SCALAR, num_scaleant
+            ijm = ix * jy * mz
             cv_s = cv_e + 1
             cv_e = cv_s + ijm - 1
             vch % alpha_ant(is:ie,js:je,1:ma,ic) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, ma/))
          end do
+         offset = offset + 1
       end if
 
-      if ( mb > 0 ) then
-         ijm = ix * jy * mb
+      if ( num_scalebb >= PARAM_FIRST_SCALAR ) then
+         mz = mzs_chem(offset)
          do ic = PARAM_FIRST_SCALAR, num_scalebb
+            ijm = ix * jy * mz
             cv_s = cv_e + 1
             cv_e = cv_s + ijm - 1
             vch % alpha_bb(is:ie,js:je,1:mb,ic) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, mb/))
          end do
+         offset = offset + 1
       end if
+
+!      if ( num_scalebio >= PARAM_FIRST_SCALAR ) then
+!         mz = mzs_chem(offset)
+!         do ic = PARAM_FIRST_SCALAR, num_scalebio
+!            ijm = ix * jy * mz
+!            cv_s = cv_e + 1
+!            cv_e = cv_s + ijm - 1
+!            vch % alpha_bio(is:ie,js:je,1:mb,ic) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, mb/))
+!         end do
+!         offset = offset + 1
+!      end if
+
    end if
 
 #endif

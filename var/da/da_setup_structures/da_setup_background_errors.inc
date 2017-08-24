@@ -14,6 +14,8 @@ subroutine da_setup_background_errors(grid, be)
    integer :: ic
 #endif
 
+   integer :: num_cv_3d_basic, num_cv_3d_extra, num_cv_2d
+
    if (trace_use) call da_trace_entry("da_setup_background_errors")
 
 !  Hybrid parameters:
@@ -30,14 +32,14 @@ subroutine da_setup_background_errors(grid, be)
             max_vert_var3 = 0
             max_vert_var4 = 0
             max_vert_var5 = 0
-#ifdef CLOUD_CV
+!#ifdef CLOUD_CV
             max_vert_var6 = 0
             max_vert_var7 = 0
             max_vert_var8 = 0
             max_vert_var9 = 0
             max_vert_var10 = 0
             max_vert_var11 = 0
-#endif
+!#endif
       end if
       sigma_alpha = alpha_std_dev
       write(6,'(a,4f15.5)')' jb_factor, je_factor, alpha_std_dev, sigma_alpha = ', &
@@ -46,25 +48,54 @@ subroutine da_setup_background_errors(grid, be)
       jb_factor = 1.0
    end if
 
+   num_cv_3d_basic = 4
+   num_cv_3d_extra = 0
+   num_cv_2d       = 1
+   if ( cv_options /= 3 ) then
+      if ( cloud_cv_options >= 2 ) then
+         num_cv_3d_extra = 5
+      end if
+      if ( use_cv_w ) then
+         num_cv_3d_extra = num_cv_3d_extra + 1
+      end if
+   end if
+
+   ! + 2 is for alpha_cv and num_ens
+   be % ncv_mz  = num_cv_3d_basic + num_cv_3d_extra + num_cv_2d + 2
+   allocate ( be%cv_mz(1:be%ncv_mz) )
+   be%cv_mz(:) = 0 ! initialize
+
+   ! initialize
    be % v1 % mz = 0
    be % v2 % mz = 0
    be % v3 % mz = 0
    be % v4 % mz = 0
    be % v5 % mz = 0
-#ifdef CLOUD_CV
    be % v6 % mz = 0
    be % v7 % mz = 0
    be % v8 % mz = 0
    be % v9 % mz = 0
    be % v10% mz = 0
    be % v11% mz = 0
-#endif
 
 #if (WRF_CHEM == 1)
-!   grid%num_alpha_chem = max(num_chem_surf-1,num_chem_acft-1)
+   num_cv_3d_basic = 0
+   num_cv_3d_extra = 0
+   num_cv_2d = 0
+
+
+!   num_cv_3d_basic = num_cv_3d_basic + 1
+!   allocate (be%alpha_chem (num_chem) )
+!   do ic = 1, num_chem
+!      be % alpha_chem(ic) % mz = 0
+!   end do
+!   allocate (be%cv%sizechem (num_chem) )
+
+   num_cv_3d_extra = num_cv_3d_extra + 1
    allocate (be%alpha_ant_chem (num_scaleant) )
    do ic = 1, num_scaleant
       be % alpha_ant_chem(ic) % mz = 0
+      num_cv_3d_extra = num_cv_3d_extra + 1
    end do
    allocate (be%cv%sizeant (num_scaleant) )
 
@@ -73,6 +104,18 @@ subroutine da_setup_background_errors(grid, be)
       be % alpha_bb_chem(ic) % mz = 0
    end do
    allocate (be%cv%sizebb (num_scalebb) )
+
+!   num_cv_3d_extra = num_cv_3d_extra + 1
+!   allocate (be%alpha_bio_chem (num_scalebio) )
+!   do ic = 1, num_scalebio
+!      be % alpha_bio_chem(ic) % mz = 0
+!   end do
+!   allocate (be%cv%sizebio (num_scalebb) )
+
+   be % ncv_mz_chem  = num_cv_3d_basic + num_cv_3d_extra + num_cv_2d
+   allocate ( be%cv_mz_chem(1:be%ncv_mz_chem) )
+   be%cv_mz_chem(:) = 0 ! initialize
+
 #endif
 
    if (global) then
@@ -95,6 +138,19 @@ subroutine da_setup_background_errors(grid, be)
 !rizvi TBD            call da_setup_be_regional (grid%xb, be)
             call da_setup_be_nmm_regional (grid%xb, be)
    end if
+
+   ! initialize
+   be % cv % size1   = 0
+   be % cv % size2   = 0
+   be % cv % size3   = 0
+   be % cv % size4   = 0
+   be % cv % size5   = 0
+   be % cv % size6   = 0
+   be % cv % size7   = 0
+   be % cv % size8   = 0
+   be % cv % size9   = 0
+   be % cv % size10  = 0
+   be % cv % size11i = 0
 
    call da_setup_cv (be)
 

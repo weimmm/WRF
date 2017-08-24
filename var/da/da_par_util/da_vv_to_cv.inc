@@ -1,9 +1,8 @@
-subroutine da_vv_to_cv(vv, xp, mzs, cv_size, rcv &
+subroutine da_vv_to_cv(vv, xp, mzs, nmzs, cv_size, rcv &
 #if (WRF_CHEM == 1)
-                        , vch &
+                        , mzs_chem, nmzs_chem, vch &
 #endif
                         )
-
    !---------------------------------------------------------------------------
    ! Purpose: Fill (local) 1D cv array from 3D (local) vv arrays.
    !---------------------------------------------------------------------------
@@ -11,14 +10,16 @@ subroutine da_vv_to_cv(vv, xp, mzs, cv_size, rcv &
    implicit none
 
    type (vp_type), intent(in)    :: vv          ! Grdipt/EOF rcv.
-#if (WRF_CHEM == 1)
-   type (xch_type), optional, intent(inout) :: vch          ! Grdipt/EOF rcv for chem
-#endif
    type (xpose_type), intent(in) :: xp          ! Dimensions and xpose buffers.
-   integer,        intent(in)    :: mzs(:)      ! Background error structure levels.
+   integer,        intent(in)    :: nmzs        ! number of cv for mz
+   integer,        intent(in)    :: mzs(nmzs)   ! Background error structure levels.
    integer,        intent(in)    :: cv_size     ! Length of CV array.
    real,           intent(inout) :: rcv(1:cv_size) ! Control variables v.
-
+#if (WRF_CHEM == 1)
+   integer, optional, intent(in)    :: nmzs_chem             ! chem number of cv for mz
+   integer, optional, intent(in)    :: mzs_chem(nmzs_chem)   ! chem Background error structure levels.
+   type (xch_type), optional, intent(inout) :: vch          ! Grdipt/EOF rcv for chem
+#endif
    integer   :: is,ie       ! Local grid range in y coordinate.
    integer   :: js,je       ! Local grid range in x coordinate.
    integer   :: ix,jy       ! Local grid horizontal dimensions.
@@ -149,131 +150,128 @@ subroutine da_vv_to_cv(vv, xp, mzs, cv_size, rcv &
       rcv(cv_s:cv_e) = RESHAPE(vv % v5(is:ie,js:je,1:mz), (/ijm/))
 #endif
    end if
-#ifdef CLOUD_CV
-   ! Store v6
-   mz = mzs(6)
-   if (mz > 0) then
-      ijm = ix * jy * mz
-      cv_s = cv_e + 1
-      cv_e = cv_s + ijm - 1
+   if ( nmzs > 10 ) then
+      ! Store v6
+      mz = mzs(6)
+      if (mz > 0) then
+         ijm = ix * jy * mz
+         cv_s = cv_e + 1
+         cv_e = cv_s + ijm - 1
 #ifdef NORESHAPE
-      do k=1,mz
-         do j=js,je
-            do i=is,ie
-               ijk = ijk + 1
-               rcv(ijk) = vv%v6(i,j,k)
+         do k=1,mz
+            do j=js,je
+               do i=is,ie
+                  ijk = ijk + 1
+                  rcv(ijk) = vv%v6(i,j,k)
+               end do
             end do
          end do
-      end do
 #else
-      rcv(cv_s:cv_e) = RESHAPE(vv % v6(is:ie,js:je,1:mz), (/ijm/))
+         rcv(cv_s:cv_e) = RESHAPE(vv % v6(is:ie,js:je,1:mz), (/ijm/))
 #endif
-   end if
-   ! Store v7
-   mz = mzs(7)
-   if (mz > 0) then
-      ijm = ix * jy * mz
-      cv_s = cv_e + 1
-      cv_e = cv_s + ijm - 1
+      end if
+      ! Store v7
+      mz = mzs(7)
+      if (mz > 0) then
+         ijm = ix * jy * mz
+         cv_s = cv_e + 1
+         cv_e = cv_s + ijm - 1
 #ifdef NORESHAPE
-      do k=1,mz
-         do j=js,je
-            do i=is,ie
-               ijk = ijk + 1
-               rcv(ijk) = vv%v7(i,j,k)
+         do k=1,mz
+            do j=js,je
+               do i=is,ie
+                  ijk = ijk + 1
+                  rcv(ijk) = vv%v7(i,j,k)
+               end do
             end do
          end do
-      end do
 #else
-      rcv(cv_s:cv_e) = RESHAPE(vv % v7(is:ie,js:je,1:mz), (/ijm/))
+         rcv(cv_s:cv_e) = RESHAPE(vv % v7(is:ie,js:je,1:mz), (/ijm/))
 #endif
-   end if
-   ! Store v8
-   mz = mzs(8)
-   if (mz > 0) then
-      ijm = ix * jy * mz
-      cv_s = cv_e + 1
-      cv_e = cv_s + ijm - 1
+      end if
+      ! Store v8
+      mz = mzs(8)
+      if (mz > 0) then
+         ijm = ix * jy * mz
+         cv_s = cv_e + 1
+         cv_e = cv_s + ijm - 1
 #ifdef NORESHAPE
-      do k=1,mz
-         do j=js,je
-            do i=is,ie
-               ijk = ijk + 1
-               rcv(ijk) = vv%v8(i,j,k)
+         do k=1,mz
+            do j=js,je
+               do i=is,ie
+                  ijk = ijk + 1
+                  rcv(ijk) = vv%v8(i,j,k)
+               end do
             end do
          end do
-      end do
 #else
-      rcv(cv_s:cv_e) = RESHAPE(vv % v8(is:ie,js:je,1:mz), (/ijm/))
+         rcv(cv_s:cv_e) = RESHAPE(vv % v8(is:ie,js:je,1:mz), (/ijm/))
 #endif
-   end if
-   ! Store v9
-   mz = mzs(9)
-   if (mz > 0) then
-      ijm = ix * jy * mz
-      cv_s = cv_e + 1
-      cv_e = cv_s + ijm - 1
+      end if
+      ! Store v9
+      mz = mzs(9)
+      if (mz > 0) then
+         ijm = ix * jy * mz
+         cv_s = cv_e + 1
+         cv_e = cv_s + ijm - 1
 #ifdef NORESHAPE
-      do k=1,mz
-         do j=js,je
-            do i=is,ie
-               ijk = ijk + 1
-               rcv(ijk) = vv%v9(i,j,k)
+         do k=1,mz
+            do j=js,je
+               do i=is,ie
+                  ijk = ijk + 1
+                  rcv(ijk) = vv%v9(i,j,k)
+               end do
             end do
          end do
-      end do
 #else
-      rcv(cv_s:cv_e) = RESHAPE(vv % v9(is:ie,js:je,1:mz), (/ijm/))
+         rcv(cv_s:cv_e) = RESHAPE(vv % v9(is:ie,js:je,1:mz), (/ijm/))
 #endif
-   end if
-   ! Store v10
-   mz = mzs(10)
-   if (mz > 0) then
-      ijm = ix * jy * mz
-      cv_s = cv_e + 1
-      cv_e = cv_s + ijm - 1
+      end if
+      ! Store v10
+      mz = mzs(10)
+      if (mz > 0) then
+         ijm = ix * jy * mz
+         cv_s = cv_e + 1
+         cv_e = cv_s + ijm - 1
 #ifdef NORESHAPE
-      do k=1,mz
-         do j=js,je
-            do i=is,ie
-               ijk = ijk + 1
-               rcv(ijk) = vv%v10(i,j,k)
+         do k=1,mz
+            do j=js,je
+               do i=is,ie
+                  ijk = ijk + 1
+                  rcv(ijk) = vv%v10(i,j,k)
+               end do
             end do
          end do
-      end do
 #else
-      rcv(cv_s:cv_e) = RESHAPE(vv % v10(is:ie,js:je,1:mz), (/ijm/))
+         rcv(cv_s:cv_e) = RESHAPE(vv % v10(is:ie,js:je,1:mz), (/ijm/))
 #endif
-   end if
-   ! Store v11
-   mz = mzs(11)
-   if (mz > 0) then
-      ijm = ix * jy * mz
-      cv_s = cv_e + 1
-      cv_e = cv_s + ijm - 1
+      end if
+   end if ! cloud_cv
+   if ( nmzs == 8 .or. nmzs == 13 ) then
+      ! Store v11
+      mz = mzs(nmzs-2)
+      if (mz > 0) then
+         ijm = ix * jy * mz
+         cv_s = cv_e + 1
+         cv_e = cv_s + ijm - 1
 #ifdef NORESHAPE
-      do k=1,mz
-         do j=js,je
-            do i=is,ie
-               ijk = ijk + 1
-               rcv(ijk) = vv%v11(i,j,k)
+         do k=1,mz
+            do j=js,je
+               do i=is,ie
+                  ijk = ijk + 1
+                  rcv(ijk) = vv%v11(i,j,k)
+               end do
             end do
          end do
-      end do
 #else
-      rcv(cv_s:cv_e) = RESHAPE(vv % v11(is:ie,js:je,1:mz), (/ijm/))
+         rcv(cv_s:cv_e) = RESHAPE(vv % v11(is:ie,js:je,1:mz), (/ijm/))
 #endif
-   end if
-#endif
-#ifdef CLOUD_CV
+      end if
+   end if ! w
+
    ! Store alpha:
-   mz = mzs(12)
-   ne = mzs(13)
-#else
-   ! Store alpha:
-   mz = mzs(6)
-   ne = mzs(7)
-#endif
+   mz = mzs(nmzs-1)
+   ne = mzs(nmzs)
    if ( ne > 0 ) then
       ix = ite_int - its_int + 1
       jy = jte_int - jts_int + 1
@@ -298,23 +296,41 @@ subroutine da_vv_to_cv(vv, xp, mzs, cv_size, rcv &
    end if
 
 #if (WRF_CHEM == 1)
-   if (present(vch) ) then
+   if (present(mzs_chem) .and. present(nmzs_chem) .and. present(vch)) then
       ix = ie-is+1
       jy = je-js+1
-#ifdef CLOUD_CV
-      ma = mzs(14)
-      mb = mzs(15)
-#else
-      ma = mzs(8)
-      mb = mzs(9)
-#endif
-      if ( ma > 0 ) then
-         ijm = ix * jy * ma
+      offset = -PARAM_FIRST_SCALAR+1
+
+!      if ( num_chem >= PARAM_FIRST_SCALAR ) then
+!         mz = mzs_chem(offset)
+!         do ic = PARAM_FIRST_SCALAR, num_chem
+!            ijm = ix * jy * mz
+!            cv_s = cv_e + 1
+!            cv_e = cv_s + ijm - 1
+!#ifdef NORESHAPE
+!            do k=1,mz
+!               do j=js,je
+!                  do i=is,ie
+!                     ijk = ijk + 1
+!                     rcv(ijk) = vch % alpha_chem(i,j,k,ic)
+!                  end do
+!               end do
+!            end do
+!#else
+!            rcv(cv_s:cv_e) = RESHAPE(vch % alpha_chem(is:ie,js:je,1:mz,ic))
+!#endif
+!         end do
+!         offset = offset + 1
+!      end if
+
+      if ( num_scaleant >= PARAM_FIRST_SCALAR ) then
+         mz = mzs_chem(offset)
          do ic = PARAM_FIRST_SCALAR, num_scaleant
+            ijm = ix * jy * mz
             cv_s = cv_e + 1
             cv_e = cv_s + ijm - 1
 #ifdef NORESHAPE
-            do k=1,ma
+            do k=1,mz
                do j=js,je
                   do i=is,ie
                      ijk = ijk + 1
@@ -323,18 +339,20 @@ subroutine da_vv_to_cv(vv, xp, mzs, cv_size, rcv &
                end do
             end do
 #else
-            rcv(cv_s:cv_e) = RESHAPE(vch % alpha_ant(is:ie,js:je,1:ma,ic))
+            rcv(cv_s:cv_e) = RESHAPE(vch % alpha_ant(is:ie,js:je,1:mz,ic))
 #endif
          end do
+         offset = offset + 1
       end if
 
-      if ( mb > 0 ) then
-         ijm = ix * jy * mb
+      if ( num_scalebb >= PARAM_FIRST_SCALAR ) then
+         mz = mzs_chem(offset)
          do ic = PARAM_FIRST_SCALAR, num_scalebb
+            ijm = ix * jy * mz
             cv_s = cv_e + 1
             cv_e = cv_s + ijm - 1
 #ifdef NORESHAPE
-            do k=1,mb
+            do k=1,mz
                do j=js,je
                   do i=is,ie
                      ijk = ijk + 1
@@ -343,10 +361,35 @@ subroutine da_vv_to_cv(vv, xp, mzs, cv_size, rcv &
                end do
             end do
 #else
-            rcv(cv_s:cv_e) = RESHAPE(vch % alpha_bb(is:ie,js:je,1:mb,ic))
+            rcv(cv_s:cv_e) = RESHAPE(vch % alpha_bb(is:ie,js:je,1:mz,ic))
 #endif
          end do
+         offset = offset + 1
       end if
+
+!      if ( num_scalebio >= PARAM_FIRST_SCALAR ) then
+!         mz = mzs_chem(offset)
+!         do ic = PARAM_FIRST_SCALAR, num_scalebio
+!            ijm = ix * jy * mz
+!            cv_s = cv_e + 1
+!            cv_e = cv_s + ijm - 1
+!#ifdef NORESHAPE
+!            do k=1,mz
+!               do j=js,je
+!                  do i=is,ie
+!                     ijk = ijk + 1
+!                     rcv(ijk) = vch % alpha_bio(i,j,k,ic)
+!                  end do
+!               end do
+!            end do
+!#else
+!            rcv(cv_s:cv_e) = RESHAPE(vch % alpha_bio(is:ie,js:je,1:mz,ic))
+!#endif
+!         end do
+!         offset = offset + 1
+!      end if
+
+
    end if
 
 #endif

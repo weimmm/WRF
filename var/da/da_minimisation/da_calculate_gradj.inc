@@ -31,19 +31,6 @@ subroutine da_calculate_gradj(it, iter, cv_size, cv_size_jb, cv_size_je, cv_size
    integer          :: jl_start, jl_end             ! Start/end indices of Jl.
    real             :: jo_partial                   ! jo for this processor
    type (y_type)    :: jo_grad_y                    ! Grad_y(jo)
-#if (WRF_CHEM != 1)
-#ifdef CLOUD_CV
-   integer          :: mz(13)
-#else
-   integer          :: mz(7)
-#endif
-#else
-#ifdef CLOUD_CV
-   integer          :: mz(15)
-#else
-   integer          :: mz(9)
-#endif
-#endif
    real             :: grad_jo(cv_size)
    real             :: grad_jb(cv_size)
    real             :: grad_je(cv_size)
@@ -65,21 +52,6 @@ subroutine da_calculate_gradj(it, iter, cv_size, cv_size_jb, cv_size_je, cv_size
    !-------------------------------------------------------------------------
    ! [0.0] initialization:
    !-------------------------------------------------------------------------
-#if (WRF_CHEM != 1)
-#ifdef CLOUD_CV
-   mz = (/ be%v1%mz, be%v2%mz, be%v3%mz, be%v4%mz, be%v5%mz, be%v6%mz, be%v7%mz, be%v8%mz, be%v9%mz, be%v10%mz, be%v11%mz, be%alpha%mz, be%ne /)
-#else
-   mz = (/ be%v1%mz, be%v2%mz, be%v3%mz, be%v4%mz, be%v5%mz, be%alpha%mz, be%ne /)
-#endif
-#else
-#ifdef CLOUD_CV
-   mz = (/ be%v1%mz, be%v2%mz, be%v3%mz, be%v4%mz, be%v5%mz, be%v6%mz, be%v7%mz, be%v8%mz, be%v9%mz, be%v10%mz, be%v11%mz, be%alpha%mz, be%ne, &
-           be%alpha_ant_chem(PARAM_FIRST_SCALAR)%mz, be%alpha_bb_chem(PARAM_FIRST_SCALAR)%mz /)
-#else
-   mz = (/ be%v1%mz, be%v2%mz, be%v3%mz, be%v4%mz, be%v5%mz, be%alpha%mz, be%ne, &
-           be%alpha_ant_chem(PARAM_FIRST_SCALAR)%mz, be%alpha_bb_chem(PARAM_FIRST_SCALAR)%mz /)
-#endif
-#endif
    je_start   = cv_size_jb + 1
    je_end     = cv_size_jb + cv_size_je
    jp_start   = cv_size_jb + cv_size_je + 1
@@ -225,15 +197,26 @@ subroutine da_calculate_gradj(it, iter, cv_size, cv_size_jb, cv_size_je, cv_size
    ! [8.0] write Gradient:
    !-------------------------------------------------------------------------
    if (present(re)) then
-      gnorm_j  = sqrt(da_dot_cv(cv_size, grad,    grad,    grid, mz, jp_start, jp_end))
-      gnorm_jo = sqrt(da_dot_cv(cv_size, grad_jo, grad_jo, grid, mz))
-      gnorm_jb = sqrt(da_dot_cv(cv_size, grad_jb, grad_jb, grid, mz))
-      gnorm_je = sqrt(da_dot_cv(cv_size, grad_je, grad_je, grid, mz))
-      gnorm_jd = sqrt(da_dot_cv(cv_size, grad_jd, grad_jd, grid, mz))
-      gnorm_jp = sqrt(da_dot_cv(cv_size, grad_jp, grad_jp, grid, mz, jp_start, jp_end))
-      gnorm_js = sqrt(da_dot_cv(cv_size, grad_js, grad_js, grid, mz))
-      gnorm_jl = sqrt(da_dot_cv(cv_size, grad_jl, grad_jl, grid, mz))
- 
+#if (WRF_CHEM != 1)               
+      gnorm_j  = sqrt(da_dot_cv(cv_size, grad,    grad,    grid, be%cv_mz, be%ncv_mz, jp_start, jp_end))
+      gnorm_jo = sqrt(da_dot_cv(cv_size, grad_jo, grad_jo, grid, be%cv_mz, be%ncv_mz))
+      gnorm_jb = sqrt(da_dot_cv(cv_size, grad_jb, grad_jb, grid, be%cv_mz, be%ncv_mz))
+      gnorm_je = sqrt(da_dot_cv(cv_size, grad_je, grad_je, grid, be%cv_mz, be%ncv_mz))
+      gnorm_jd = sqrt(da_dot_cv(cv_size, grad_jd, grad_jd, grid, be%cv_mz, be%ncv_mz))
+      gnorm_jp = sqrt(da_dot_cv(cv_size, grad_jp, grad_jp, grid, be%cv_mz, be%ncv_mz, jp_start, jp_end))
+      gnorm_js = sqrt(da_dot_cv(cv_size, grad_js, grad_js, grid, be%cv_mz, be%ncv_mz))
+      gnorm_jl = sqrt(da_dot_cv(cv_size, grad_jl, grad_jl, grid, be%cv_mz, be%ncv_mz))
+#else
+      gnorm_j  = sqrt(da_dot_cv(cv_size, grad,    grad,    grid, be%cv_mz, be%ncv_mz,be%cv_mz_chem, be%ncv_mz_chem, jp_start, jp_end))
+      gnorm_jo = sqrt(da_dot_cv(cv_size, grad_jo, grad_jo, grid, be%cv_mz, be%ncv_mz,be%cv_mz_chem, be%ncv_mz_chem))
+      gnorm_jb = sqrt(da_dot_cv(cv_size, grad_jb, grad_jb, grid, be%cv_mz, be%ncv_mz,be%cv_mz_chem, be%ncv_mz_chem))
+      gnorm_je = sqrt(da_dot_cv(cv_size, grad_je, grad_je, grid, be%cv_mz, be%ncv_mz,be%cv_mz_chem, be%ncv_mz_chem))
+      gnorm_jd = sqrt(da_dot_cv(cv_size, grad_jd, grad_jd, grid, be%cv_mz, be%ncv_mz,be%cv_mz_chem, be%ncv_mz_chem))
+      gnorm_jp = sqrt(da_dot_cv(cv_size, grad_jp, grad_jp, grid, be%cv_mz, be%ncv_mz,be%cv_mz_chem, be%ncv_mz_chem, jp_start, jp_end))
+      gnorm_js = sqrt(da_dot_cv(cv_size, grad_js, grad_js, grid, be%cv_mz, be%ncv_mz,be%cv_mz_chem, be%ncv_mz_chem))
+      gnorm_jl = sqrt(da_dot_cv(cv_size, grad_jl, grad_jl, grid, be%cv_mz, be%ncv_mz,be%cv_mz_chem, be%ncv_mz_chem))
+#endif
+
       if (rootproc) &
          write(grad_unit,fmt='(2x,i2,1x,e10.3,2x,i4,8(1x,f10.3))') & 
                it, eps(it), iter, gnorm_j, gnorm_jb, gnorm_jo, gnorm_je, gnorm_jd, gnorm_jp, gnorm_js, gnorm_jl
