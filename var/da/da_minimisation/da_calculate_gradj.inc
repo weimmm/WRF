@@ -80,28 +80,62 @@ subroutine da_calculate_gradj(it, iter, cv_size, cv_size_jb, cv_size_je, cv_size
    if (present(re)) then
       call da_calculate_grady(iv, re, jo_grad_y)   
       if ( iter > 0 .and. test_gradient ) jcdf_flag = .true.
+#ifdef VAR4D
       call da_transform_vtoy_adj(cv_size, be, grid%ep, grad_jo, iv, &
-              grid%vp, grid%vv, grid%vp6, grid%vv6, &
-              xbx, jo_grad_y, grid, config_flags, jcdf_flag &
+               grid%vp, grid%vv, xbx, jo_grad_y, grid, config_flags, jcdf_flag, grid%vp6, grid%vv6 &
 #if (WRF_CHEM == 1)
               , grid%vch &
 #endif
               )
+#else
+      call da_transform_vtoy_adj(cv_size, be, grid%ep, grad_jo, iv, &
+               grid%vp, grid%vv, xbx, jo_grad_y, grid, config_flags, jcdf_flag &
+!!When vch includes initial conditions, need to add vch=grid%vch at end of this call
+!#if (WRF_CHEM == 1)
+!              , vch=grid%vch &
+!#endif
+              )
+
+
+#endif
    else
+#ifdef VAR4D
       call da_transform_vtoy(cv_size, be, grid%ep, cv, iv, grid%vp, &
-              grid%vv, grid%vp6, grid%vv6, xbx, y, grid, config_flags &
+              grid%vv, xbx, y, grid, config_flags, grid%vp6, grid%vv6 &
 #if (WRF_CHEM == 1)
               , grid%vch &
 #endif
               )
+
+#else
+      call da_transform_vtoy(cv_size, be, grid%ep, cv, iv, grid%vp, &
+              grid%vv, xbx, y, grid, config_flags &
+!!When vch includes initial conditions, need to add vch=grid%vch at end of this call
+!#if (WRF_CHEM == 1)
+!              , vch=grid%vch &
+!#endif
+              )
+
+#endif
       call da_calculate_grady(iv, y, jo_grad_y)   
+#ifdef VAR4D
       call da_transform_vtoy_adj(cv_size, be, grid%ep, grad_jo, iv, &
-              grid%vp, grid%vv, grid%vp6, grid%vv6, &
-              xbx, jo_grad_y, grid, config_flags, .true. &
+              grid%vp, grid%vv, xbx, jo_grad_y, grid, config_flags, .true., grid%vp6, grid%vv6 &
 #if (WRF_CHEM == 1)
               , grid%vch &
 #endif
               )
+
+#else
+      call da_transform_vtoy_adj(cv_size, be, grid%ep, grad_jo, iv, &
+              grid%vp, grid%vv, xbx, jo_grad_y, grid, config_flags, .true. &
+!!When vch includes initial conditions, need to add vch=grid%vch at end of this call
+!#if (WRF_CHEM == 1)
+!              , vch=grid%vch &
+!#endif
+              )
+
+#endif
       grad_jo = - grad_jo    !! Compensate for sign in calculation of grad_v (Jo)
    end if
       

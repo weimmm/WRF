@@ -74,14 +74,28 @@ subroutine da_calculate_j(it, iter, cv_size, cv_size_jb, cv_size_je, cv_size_jp,
 
    ! [1.1] transform from control variable to model grid space:
 
-   if (iter > 0) &
+   if (iter > 0) then
+#ifdef VAR4D
       call da_transform_vtoy(cv_size, be, grid%ep, xhat, iv, grid%vp, grid%vv,&
-                              grid%vp6, grid%vv6, xbx, y, &
-                              grid, config_flags          &
+                              xbx, y,                                         &
+                              grid, config_flags, grid%vp6, grid%vv6 &
 #if (WRF_CHEM == 1)
                               , grid%vch &
 #endif
                               )
+
+#else
+      call da_transform_vtoy(cv_size, be, grid%ep, xhat, iv, grid%vp, grid%vv,&
+                              xbx, y,                                         &
+                              grid, config_flags &
+!!When vch includes initial conditions, need to add vch=grid%vch at end of this call
+!#if (WRF_CHEM == 1)
+!              , vch=grid%vch &
+!#endif
+              )
+
+#endif
+   end if
 
    ! [1.2] compute residual (o-a) = (o-b) - h x~
 

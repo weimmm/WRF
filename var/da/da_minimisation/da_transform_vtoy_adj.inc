@@ -1,10 +1,9 @@
-subroutine da_transform_vtoy_adj(cv_size, be, ep, cv, iv, vp, vv, vp6, vv6, xbx, y, &
-   grid, config_flags, jcdf_flag &
+subroutine da_transform_vtoy_adj(cv_size, be, ep, cv, iv, vp, vv, xbx, y, &
+   grid, config_flags, jcdf_flag, vp6, vv6 &
 #if (WRF_CHEM == 1)
                         , vch &
 #endif
                         )
-
    !-------------------------------------------------------------------------
    ! Purpose:  Does Adjoint of control variable (V) transform to Obs-space(Y)
    !-------------------------------------------------------------------------
@@ -17,9 +16,7 @@ subroutine da_transform_vtoy_adj(cv_size, be, ep, cv, iv, vp, vv, vp6, vv6, xbx,
    real,                       intent(out)   :: cv(1:cv_size) ! control variables.
    type(iv_type),              intent(inout) :: iv     ! innovation vector (o-b).
    type(vp_type),              intent(inout) :: vp     ! Grdipt/level CV.
-   type(vp_type),              intent(inout) :: vp6    ! Grdipt/level CV for 6h.
    type(vp_type),              intent(inout) :: vv     ! Grdipt/EOF CV.
-   type(vp_type),              intent(inout) :: vv6    ! Grdipt/EOF CV for 6h.
 #if (WRF_CHEM == 1)
    type(xch_type), optional, intent(out) :: vch   ! CHEM CV
 #endif
@@ -28,6 +25,10 @@ subroutine da_transform_vtoy_adj(cv_size, be, ep, cv, iv, vp, vv, vp6, vv6, xbx,
    type(domain),               intent(inout) :: grid
    type(grid_config_rec_type), intent(inout) :: config_flags
    logical,                    intent(in)    :: jcdf_flag       ! additional flag to switch off JcDF, used to switch off JcDF in calculation of J.
+
+   ! vp6 and vv6 are defined only when the code is configured and compiled for 4dvar
+   type(vp_type), optional,    intent(inout) :: vp6    ! Grdipt/level CV for 6h.
+   type(vp_type), optional,    intent(inout) :: vv6    ! Grdipt/EOF CV for 6h.
 
    type(x_type)  :: shuffle
    real          :: cv_local(1:cv_size) ! control variables

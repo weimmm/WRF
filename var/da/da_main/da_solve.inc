@@ -617,11 +617,14 @@
       call da_zero_vp_type (grid%vp)
   
       if ( var4d ) then
+#ifdef VAR4D
          call da_zero_vp_type (grid%vv6)
          call da_zero_vp_type (grid%vp6)
 #if (WRF_CHEM == 1)
          call da_zero_xch_type (grid%vch)
 #endif
+#endif
+
       end if
 
    !---------------------------------------------------------------------------

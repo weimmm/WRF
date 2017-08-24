@@ -80,12 +80,12 @@ module da_setup_structures
       use_seviriobs, jds_int, jde_int, anal_type_hybrid_dual_res, use_amsr2obs, nrange, use_4denvar
    use da_control, only: rden_bin
    use da_control, only: use_cv_w
-   use da_control, only: pseudo_tpw, pseudo_ztd, pseudo_ref, pseudo_uvtpq, pseudo_elv
+   use da_control, only: pseudo_tpw, pseudo_ztd, pseudo_ref, pseudo_uvtpq, pseudo_elv, anal_type_qcobs
+
 #if (WRF_CHEM == 1)
    use module_state_description, only : num_chem_surf, num_chem_acft, &
       num_scaleant, num_scalebb, PARAM_FIRST_SCALAR
 #endif
-
    use da_obs, only : da_fill_obs_structures, da_store_obs_grid_info, da_store_obs_grid_info_rad, &
 #if (WRF_CHEM == 1)
                       da_store_obs_grid_info_acft, da_fill_obs_structures_chem, &
