@@ -29,13 +29,11 @@ module da_obs_io
       pi, ob_format_gpsro, ob_format_ascii, analysis_date, kms,kme, v_interp_h,v_interp_p, &
       wind_sd,wind_sd_synop,wind_sd_tamdar,wind_sd_mtgirs,wind_sd_profiler,wind_sd_geoamv,wind_sd_polaramv, &
       wind_sd_airep,wind_sd_sound,wind_sd_metar,wind_sd_ships,wind_sd_qscat,wind_sd_buoy,wind_sd_pilot,wind_stats_sd,&
-#if (WRF_CHEM == 1)
-      num_ts, num_surf_obs, num_acft_obs, num_platform, chem_surf, chem_acft, &
-      use_chem_surfobs, use_chem_acftobs, time_step, &
-#endif
-      thin_conv, thin_conv_ascii, lsac_nhskip, lsac_nvskip, lsac_calcerr, lsac_print_details
+      thin_conv, thin_conv_ascii
 
 #if (WRF_CHEM == 1)
+   use da_control, only : num_ts, num_surf_obs, num_acft_obs, num_platform, chem_surf, chem_acft, &
+      use_chem_surfobs, use_chem_acftobs, time_step
    use module_state_description, only : num_chem_surf, num_chem_acft
    use module_dm, only : wrf_dm_sum_reals
 #endif
@@ -65,8 +63,6 @@ module da_obs_io
 #endif
    use da_reporting, only : message, da_message
    use da_interpolation, only : da_to_zk
-   use da_netcdf_interface, only : da_get_var_3d_real_cdf, da_get_dims_cdf, &
-      da_get_var_2d_real_cdf
 
    implicit none
 
@@ -105,8 +101,5 @@ contains
 #include "da_write_noise_to_ob.inc"
 #include "da_final_write_filtered_obs.inc"
 #include "da_final_write_modified_filtered_obs.inc"
-#include "da_read_lsac_util.inc"
-#include "da_read_obs_lsac.inc"
-#include "da_scan_obs_lsac.inc"
 
 end module da_obs_io
