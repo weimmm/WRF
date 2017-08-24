@@ -13,6 +13,8 @@ module da_setup_structures
       da_allocate_background_errors_chem, da_allocate_observations_chem, &
 #endif
       multi_level_type,each_level_type, da_allocate_observations_rain
+   use da_define_structures, only : da_allocate_obs_info, da_allocate_y, da_allocate_y_radar, &
+      da_allocate_y_rain
    use da_wrf_interfaces, only : wrf_debug
    use da_control, only : trace_use,vert_evalue,stdout,rootproc, myproc, &
       analysis_date,coarse_ix,coarse_ds,map_projection,coarse_jy, c2,dsm,phic, &
@@ -78,6 +80,7 @@ module da_setup_structures
       use_seviriobs, jds_int, jde_int, anal_type_hybrid_dual_res, use_amsr2obs, nrange, use_4denvar
    use da_control, only: rden_bin, use_lsac
    use da_control, only: use_cv_w
+   use da_control, only: pseudo_tpw, pseudo_ztd, pseudo_ref, pseudo_uvtpq, pseudo_elv
 #if (WRF_CHEM == 1)
    use module_state_description, only : num_chem_surf, num_chem_acft, &
       num_scaleant, num_scalebb, PARAM_FIRST_SCALAR
@@ -152,9 +155,13 @@ contains
 #include "da_setup_obs_structures_madis.inc"
 #include "da_setup_obs_structures_rain.inc"
 #include "da_setup_obs_structures_radar.inc"
+<<<<<<< HEAD
 #if (WRF_CHEM == 1)
 #include "da_setup_obs_structures_chem.inc"
 #endif
+=======
+#include "da_setup_pseudo_obs.inc"
+>>>>>>> 5c59961f
 #include "da_setup_obs_interp_wts.inc"
 #include "da_setup_runconstants.inc"
 #include "da_cloud_model.inc"

@@ -69,6 +69,7 @@ module da_minimisation
       ims, ime, jms, jme, kms, kme, ips, ipe, jps, jpe, kps, kpe, fgat_rain_flags, var4d_bin_rain, freeze_varbc, &
       use_wpec, wpec_factor, use_4denvar, anal_type_hybrid_dual_res, alphacv_method, alphacv_method_xa, &
       checkpoint_interval
+   use da_control, only: write_detail_grad_fn, pseudo_uvtpq
    use da_define_structures, only : iv_type, y_type,  j_type, be_type, &
 #if (WRF_CHEM == 1)
       da_allocate_y_chem, da_zero_xch_type, &

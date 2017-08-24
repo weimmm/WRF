@@ -31,9 +31,12 @@ module da_obs
 #endif
       write_mod_filtered_obs, radiance, use_varbc, obs_names, q_error_options
    ! use_crtm_kmatrix,use_crtm_kmatrix_fast
+   use da_control, only : pseudo_tpw, pseudo_ztd, pseudo_ref, pseudo_uvtpq
+   use da_define_structures, only : da_allocate_obs_info
 #if (WRF_CHEM == 1)
    use module_state_description, only : num_chem_surf, num_chem_acft
 #endif
+
 #ifdef CRTM
    use da_crtm, only : da_transform_xtoy_crtm, da_transform_xtoy_crtm_adj
       !da_transform_xtoy_crtmk,da_transform_xtoy_crtmk_adj
@@ -90,7 +93,6 @@ contains
 #include "da_fill_obs_structures_chem.inc"
 #endif
 #include "da_random_omb_all.inc"
-#include "da_setup_pseudo_obs.inc"
 #include "da_store_obs_grid_info.inc"
 #include "da_store_obs_grid_info_rad.inc"
 #if (WRF_CHEM == 1)
