@@ -1,6 +1,6 @@
 subroutine da_cv_to_global(cv_size, cv_size_global, x, grid, mzs, nmzs, xg &
 #if (WRF_CHEM == 1)       
-                           , mzs_chem, nmzs_chem &
+                           , mzs_chem &
 #endif                    
                           )
 
@@ -24,8 +24,7 @@ subroutine da_cv_to_global(cv_size, cv_size_global, x, grid, mzs, nmzs, xg &
    real,             intent(inout) :: xg(1:cv_size_global) ! global cv-array
 
 #if (WRF_CHEM == 1)
-   integer,          intent(in)    :: nmzs           ! number of mz
-   integer,          intent(in)    :: mzs(nmzs)      ! mz for each variable
+   integer,          intent(in)    :: mzs_chem(:) ! mz for each variable
 #endif
 
 #ifdef DM_PARALLEL
@@ -83,7 +82,7 @@ subroutine da_cv_to_global(cv_size, cv_size_global, x, grid, mzs, nmzs, xg &
 
 #if (WRF_CHEM == 1)
    offset = 1
-!   if ( num_chem >= PARAM_FIRST_SCALAR ) then
+!   if ( num_scalechem >= PARAM_FIRST_SCALAR ) then
 !      mz_chem = mzs_chem(offset)
 !      offset = offset + 1
 !   end if
@@ -100,7 +99,7 @@ subroutine da_cv_to_global(cv_size, cv_size_global, x, grid, mzs, nmzs, xg &
 !      offset = offset + 1
 !   end if
 
-!   allocate(vvc_x%alpha_chem(ims:ime,jms:jme,mz_chem,num_chem))
+!   allocate(vvc_x%alpha_chem(ims:ime,jms:jme,mz_chem,num_scalechem))
    allocate(vvc_x%alpha_ant(ims:ime,jms:jme,mz_ant,num_scaleant))
    allocate(vvc_x%alpha_bb(ims:ime,jms:jme,mz_bb,num_scalebb))
 !   allocate(vvc_x%alpha_bio(ims:ime,jms:jme,mz_bio,num_scalebio))
@@ -109,7 +108,7 @@ subroutine da_cv_to_global(cv_size, cv_size_global, x, grid, mzs, nmzs, xg &
 
    call da_cv_to_vv (cv_size, x, mzs, nmzs, vv_x &
 #if (WRF_CHEM == 1)
-         , mzs_chem, nmzs_chem, vvc_x &
+         , mzs_chem, vvc_x &
 #endif
        )
 
@@ -133,7 +132,7 @@ subroutine da_cv_to_global(cv_size, cv_size_global, x, grid, mzs, nmzs, xg &
       ! the 4th dimension of vv_xg%alpha is the number of ensembles
       allocate(vv_xg%alpha(ids_int:ide_int,jds_int:jde_int,kds_int:kde_int,mzs(nmzs)))
 #if (WRF_CHEM == 1)
-!      allocate(vvc_xg%alpha_chem(ids:ide,jds:jde,mz_chem,num_chem))
+!      allocate(vvc_xg%alpha_chem(ids:ide,jds:jde,mz_chem,num_scalechem))
       allocate(vvc_xg%alpha_ant(ids:ide,jds:jde,mz_ant,num_scaleant))
       allocate(vvc_xg%alpha_bb(ids:ide,jds:jde,mz_bb,num_scalebb))
 !      allocate(vvc_xg%alpha_bio(ids:ide,jds:jde,mz_bio,num_scalebio))
@@ -185,7 +184,7 @@ subroutine da_cv_to_global(cv_size, cv_size_global, x, grid, mzs, nmzs, xg &
       call da_patch_to_global(grid, vv_x%v11, vv_xg%v11, mzs(nmzs-2))
    end if
 #if (WRF_CHEM == 1)
-!   do ic = PARAM_FIRST_SCALAR, num_chem
+!   do ic = PARAM_FIRST_SCALAR, num_scalechem
 !      call da_patch_to_global(grid, vvc_x%alpha_chem(:,:,:,ic),    vvc_xg%alpha_chem(:,:,:,ic),    mz_chem)
 !   end do
    do ic = PARAM_FIRST_SCALAR, num_scaleant
@@ -237,7 +236,7 @@ subroutine da_cv_to_global(cv_size, cv_size_global, x, grid, mzs, nmzs, xg &
       xpg%kts = kds; xpg%kte = kde
       call da_vv_to_cv(vv_xg, xpg, mzs, nmzs, cv_size_global, xg &
 #if (WRF_CHEM == 1)
-         , mzs_chem, nmzs_chem, vvc_xg &
+         , mzs_chem, vvc_xg &
 #endif
       )
    end if

@@ -83,34 +83,41 @@ subroutine da_setup_background_errors(grid, be)
    num_cv_3d_extra = 0
    num_cv_2d = 0
 
+!   if (num_scalechem >= PARAM_FIRST_SCALAR) then
+!      num_cv_3d_basic = num_cv_3d_basic + 1
+!      allocate (be%alpha_chem (num_scalechem) )
+!      do ic = 1, num_scalechem
+!         be % alpha_chem(ic) % mz = 0
+!      end do
+!      allocate (be%cv%sizechem (num_scalechem) )
+!   end if
 
-!   num_cv_3d_basic = num_cv_3d_basic + 1
-!   allocate (be%alpha_chem (num_chem) )
-!   do ic = 1, num_chem
-!      be % alpha_chem(ic) % mz = 0
-!   end do
-!   allocate (be%cv%sizechem (num_chem) )
-
-   num_cv_3d_extra = num_cv_3d_extra + 1
-   allocate (be%alpha_ant_chem (num_scaleant) )
-   do ic = 1, num_scaleant
-      be % alpha_ant_chem(ic) % mz = 0
+   if (num_scaleant >= PARAM_FIRST_SCALAR) then
       num_cv_3d_extra = num_cv_3d_extra + 1
-   end do
-   allocate (be%cv%sizeant (num_scaleant) )
+      allocate (be%alpha_ant_chem (num_scaleant) )
+      do ic = 1, num_scaleant
+         be % alpha_ant_chem(ic) % mz = 0
+         num_cv_3d_extra = num_cv_3d_extra + 1
+      end do
+      allocate (be%cv%sizeant (num_scaleant) )
+   end if
 
-   allocate (be%alpha_bb_chem (num_scalebb) )
-   do ic = 1, num_scalebb
-      be % alpha_bb_chem(ic) % mz = 0
-   end do
-   allocate (be%cv%sizebb (num_scalebb) )
+   if (num_scalebb >= PARAM_FIRST_SCALAR) then
+      allocate (be%alpha_bb_chem (num_scalebb) )
+      do ic = 1, num_scalebb
+         be % alpha_bb_chem(ic) % mz = 0
+      end do
+      allocate (be%cv%sizebb (num_scalebb) )
+   end if
 
-!   num_cv_3d_extra = num_cv_3d_extra + 1
-!   allocate (be%alpha_bio_chem (num_scalebio) )
-!   do ic = 1, num_scalebio
-!      be % alpha_bio_chem(ic) % mz = 0
-!   end do
-!   allocate (be%cv%sizebio (num_scalebb) )
+!   if (num_scalebio >= PARAM_FIRST_SCALAR) then
+!      num_cv_3d_extra = num_cv_3d_extra + 1
+!      allocate (be%alpha_bio_chem (num_scalebio) )
+!      do ic = 1, num_scalebio
+!         be % alpha_bio_chem(ic) % mz = 0
+!      end do
+!      allocate (be%cv%sizebio (num_scalebb) )
+!   end if
 
    be % ncv_mz_chem  = num_cv_3d_basic + num_cv_3d_extra + num_cv_2d
    allocate ( be%cv_mz_chem(1:be%ncv_mz_chem) )

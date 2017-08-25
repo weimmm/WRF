@@ -318,7 +318,7 @@ state    real  ebu_c3h6     ijkf     ebu           1         Z        h      "eb
 state    real  ebu_c3h8     ijkf     ebu           1         Z        h      "ebu_c3h8"      "biomass burning emiss"  "mol km^-2 hr^-1"
 state    real  ebu_ch2o     ijkf     ebu           1         Z        h      "ebu_ch2o"      "biomass burning emiss"  "mol km^-2 hr^-1"
 state    real  ebu_ch3cho   ijkf     ebu           1         Z        h      "ebu_ch3cho"    "biomass burning emiss"  "mol km^-2 hr^-1"
-state    real  ebu_ch3coch3 ikjf     ebu           1         Z        h      "ebu_ch3coch3"  "biomass burning emiss"  "mol km^-2 hr^-1"
+state    real  ebu_ch3coch3 ijkf     ebu           1         Z        h      "ebu_ch3coch3"  "biomass burning emiss"  "mol km^-2 hr^-1"
 state    real  ebu_ch3oh    ijkf     ebu           1         Z        h      "ebu_ch3oh"     "biomass burning emiss"  "mol km^-2 hr^-1"
 state    real  ebu_mek      ijkf     ebu           1         Z        h      "ebu_mek"       "biomass burning emiss"  "mol km^-2 hr^-1"
 state    real  ebu_toluene  ijkf     ebu           1         Z        h      "ebu_toluene"   "biomass burning emiss"  "mol km^-2 hr^-1"
@@ -1162,7 +1162,7 @@ state   real   msa         ijkftb   chem        1         -   i0{12}rh0{17}usdf=
 #state   real   ch3so2      ijkftb   chem        1         -   i0{12}rhusdf=(bdy_interp:dt)  "ch3so2"        "CH3SO2 mixing ratio"      "ppmv"
 #state   real   ch3so3      ijkftb   chem        1         -   i0{12}rhusdf=(bdy_interp:dt)  "ch3so3"        "CH3SO3 mixing ratio"      "ppmv"
 #state   real   ch3so2oo    ijkftb   chem        1         -   i0{12}rhusdf=(bdy_interp:dt)  "ch3so2oo"      "CH3SO2OO mixing ratio"    "ppmv"
-#state   real   ch3so2ch2oo ikjftb   chem        1         -   i0{12}rhusdf=(bdy_interp:dt)  "ch3so2ch2oo"   "CH3SO2CH2OO mixing ratio" "ppmv"
+#state   real   ch3so2ch2oo ijkftb   chem        1         -   i0{12}rhusdf=(bdy_interp:dt)  "ch3so2ch2oo"   "CH3SO2CH2OO mixing ratio" "ppmv"
 #state   real   mtf         ijkftb   chem        1         -   i0{12}rhusdf=(bdy_interp:dt)  "mtf"           "MTF mixing ratio"         "ppmv"
 #
 ##Additional CBM4 gas variables inside the chem array...
@@ -2495,19 +2495,19 @@ state   real    tr18_7     ijkftb  tracer        1         -     i8rhusdf=(bdy_i
 state   real    tr18_8     ijkftb  tracer        1         -     i8rhusdf=(bdy_interp:dt)    "tr18_8"         "tr18_8"          -
 state   real    tr18_9     ijkftb  tracer        1         -     i8rhusdf=(bdy_interp:dt)    "tr18_9"         "tr18_9"          -
 
-state   real    trbc1      ijkftb  tracer        1         -     irh0{17}usdf=(bdy_interp:dt)  "TRBC1"            "TRBC1"             "ug/kg-dryair"
+#state   real    trbc1      ijkftb  tracer        1         -     irh0{17}usdf=(bdy_interp:dt)  "TRBC1"            "TRBC1"             "ug/kg-dryair"
 
-state   real    trbc2      ijkftb  tracer        2         -     irh0{17}usdf=(bdy_interp:dt)    "TRBC2"            "TRBC2"            "ug/kg-dryair"
+#state   real    trbc2      ijkftb  tracer        2         -     irh0{17}usdf=(bdy_interp:dt)    "TRBC2"            "TRBC2"            "ug/kg-dryair"
 
 state   real    -          ijkft  g_tracer      1         -     -    -                              
 state   real    g_plume    ijkft  g_tracer      1         -     irhusdf=(bdy_interp:dt)    "G_PLUME"        "Fukushima Tracer"          -
-state   real    g_trbc1    ijkft  g_tracer      1         -     i{18}rh{18}usdf=(bdy_interp:dt)    "G_TRBC1"            "G_TRBC1"            "ug/kg-dryair"
-state   real    g_trbc2    ijkft  g_tracer      1         -     i{18}rh{18}usdf=(bdy_interp:dt)    "G_TRBC2"            "G_TRBC2"            "ug/kg-dryair"
+#state   real    g_trbc1    ijkft  g_tracer      1         -     i{18}rh{18}usdf=(bdy_interp:dt)    "G_TRBC1"            "G_TRBC1"            "ug/kg-dryair"
+#state   real    g_trbc2    ijkft  g_tracer      1         -     i{18}rh{18}usdf=(bdy_interp:dt)    "G_TRBC2"            "G_TRBC2"            "ug/kg-dryair"
 
 state   real    -          ijkft  a_tracer      1         -     -    -                              
 state   real    a_plume    ijkft  a_tracer      1         -     irhusdf=(bdy_interp:dt)    "A_PLUME"        "Fukushima Tracer"          -
-state   real    a_trbc1    ijkft  a_tracer      1         -     i{17}rh{17}usdf=(bdy_interp:dt)  "A_TRBC1"            "A_TRBC1"            "ug/kg-dryair"
-state   real    a_trbc2    ijkft  a_tracer      1         -     i{17}rh{17}usdf=(bdy_interp:dt)  "A_TRBC2"            "A_TRBC2"            "ug/kg-dryair"
+#state   real    a_trbc1    ijkft  a_tracer      1         -     i{17}rh{17}usdf=(bdy_interp:dt)  "A_TRBC1"            "A_TRBC1"            "ug/kg-dryair"
+#state   real    a_trbc2    ijkft  a_tracer      1         -     i{17}rh{17}usdf=(bdy_interp:dt)  "A_TRBC2"            "A_TRBC2"            "ug/kg-dryair"
 
 
 # time averaged stuff
@@ -2861,7 +2861,7 @@ package   tracer_test1  tracer_opt==2       -             tracer:tr17_1,tr17_2,t
 package   tracer_test2  tracer_opt==3       -             tracer:tr17_1,tr17_2,tr17_3,tr17_4,tr17_5,tr17_6,tr17_7,tr17_8
 package   tracer_test3  tracer_opt==4       -             tracer:tr17_1,tr17_2,tr17_3,tr17_4,tr17_5,tr17_6,tr17_7,tr17_8,tr18_1,tr18_2
 package   tracer_test4  tracer_opt==5       -             tracer:plume;g_tracer:g_plume;a_tracer:a_plume
-package   tracer_chem   tracer_opt==6       -             tracer:trbc1,trbc2;g_tracer:g_trbc1,g_trbc2;a_tracer:a_trbc1,a_trbc2
+#package   tracer_chem   tracer_opt==6       -             tracer:trbc1,trbc2;g_tracer:g_trbc1,g_trbc2;a_tracer:a_trbc1,a_trbc2
 
 
 # the following arrays only needed for aircraft emissions options

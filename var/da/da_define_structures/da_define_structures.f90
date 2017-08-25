@@ -1122,8 +1122,8 @@ module da_define_structures
       type (be_subtype) :: alpha
       real*8, pointer     :: pb_vert_reg(:,:,:)
 #if (WRF_CHEM == 1)
-      integer           :: ncv_mz_chem(:)      ! number of variables for cv_mz
-      integer, pointer  :: cv_mz_chem(:,:)    ! array to hold mz of each cv
+      integer           :: ncv_mz_chem      ! number of variables for cv_mz
+      integer, pointer  :: cv_mz_chem(:)    ! array to hold mz of each cv
 
 !      type (be_subtype),allocatable :: alpha_chem(:)     !Initial condition scaling factor CVs
       type (be_subtype),allocatable :: alpha_ant_chem(:) !Anthro emission scaling factor CVs

@@ -85,6 +85,7 @@ module da_setup_structures
 #if (WRF_CHEM == 1)
    use module_state_description, only : num_chem_surf, num_chem_acft, &
       num_scaleant, num_scalebb, PARAM_FIRST_SCALAR
+!      num_scalechem, num_scalebio
 #endif
    use da_obs, only : da_fill_obs_structures, da_store_obs_grid_info, da_store_obs_grid_info_rad, &
 #if (WRF_CHEM == 1)

@@ -121,7 +121,7 @@ subroutine da_minimise_cg(grid, config_flags,            &
 
    rrmold = da_dot_cv(cv_size, -phat, ghat, grid, be%cv_mz, be%ncv_mz &
 #if (WRF_CHEM == 1)
-               ,be%cv_mz_chem, be%ncv_mz_chem &
+               ,be%cv_mz_chem &
 #endif
                , jp_start, jp_end)
    j_grad_norm_target = sqrt (rrmold)
@@ -155,7 +155,7 @@ subroutine da_minimise_cg(grid, config_flags,            &
       
       apdotp = da_dot_cv(cv_size, fhat, phat, grid, be%cv_mz, be%ncv_mz &
 #if (WRF_CHEM == 1)
-               ,be%cv_mz_chem, be%ncv_mz_chem &
+               ,be%cv_mz_chem &
 #endif
                , jp_start, jp_end)
 
@@ -170,7 +170,7 @@ subroutine da_minimise_cg(grid, config_flags,            &
          do i = iter-1, 0, -1
             gdot = da_dot_cv(cv_size, ghat, qhat(i)%values, grid, be%cv_mz, be%ncv_mz &
 #if (WRF_CHEM == 1)
-               ,be%cv_mz_chem, be%ncv_mz_chem &
+               ,be%cv_mz_chem &
 #endif
                , jp_start, jp_end)
             ghat = ghat - gdot * qhat(i)%values
@@ -179,7 +179,7 @@ subroutine da_minimise_cg(grid, config_flags,            &
       
       rrmnew = da_dot_cv (cv_size, precon*ghat, ghat, grid, be%cv_mz, be%ncv_mz &
 #if (WRF_CHEM == 1)
-               ,be%cv_mz_chem, be%ncv_mz_chem &
+               ,be%cv_mz_chem &
 #endif
                , jp_start, jp_end)
       rrmnew_norm = sqrt(rrmnew)
@@ -206,7 +206,7 @@ subroutine da_minimise_cg(grid, config_flags,            &
       else
          j_total = j0_total + 0.5 * da_dot_cv(cv_size,ghat0,xhat,grid,be%cv_mz,be%ncv_mz &
 #if (WRF_CHEM == 1)
-               ,be%cv_mz_chem, be%ncv_mz_chem &
+               ,be%cv_mz_chem &
 #endif
                ,jp_start,jp_end)
       endif
@@ -252,7 +252,7 @@ subroutine da_minimise_cg(grid, config_flags,            &
 
    rrmnew_norm = SQRT(da_dot_cv(cv_size,ghat,ghat,grid,be%cv_mz,be%ncv_mz &
 #if (WRF_CHEM == 1)
-               ,be%cv_mz_chem, be%ncv_mz_chem &
+               ,be%cv_mz_chem &
 #endif
                ,jp_start,jp_end))
 

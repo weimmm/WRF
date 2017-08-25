@@ -1,6 +1,6 @@
 subroutine da_vv_to_cv(vv, xp, mzs, nmzs, cv_size, rcv &
 #if (WRF_CHEM == 1)
-                        , mzs_chem, nmzs_chem, vch &
+                        , mzs_chem, vch &
 #endif
                         )
    !---------------------------------------------------------------------------
@@ -16,9 +16,8 @@ subroutine da_vv_to_cv(vv, xp, mzs, nmzs, cv_size, rcv &
    integer,        intent(in)    :: cv_size     ! Length of CV array.
    real,           intent(inout) :: rcv(1:cv_size) ! Control variables v.
 #if (WRF_CHEM == 1)
-   integer, optional, intent(in)    :: nmzs_chem             ! chem number of cv for mz
-   integer, optional, intent(in)    :: mzs_chem(nmzs_chem)   ! chem Background error structure levels.
-   type (xch_type), optional, intent(inout) :: vch          ! Grdipt/EOF rcv for chem
+   integer, optional, intent(in)    :: mzs_chem(:)   ! chem Background error structure levels.
+   type (xch_type), optional, intent(inout) :: vch   ! Grdipt/EOF rcv for chem
 #endif
    integer   :: is,ie       ! Local grid range in y coordinate.
    integer   :: js,je       ! Local grid range in x coordinate.
@@ -29,8 +28,7 @@ subroutine da_vv_to_cv(vv, xp, mzs, nmzs, cv_size, rcv &
    integer   :: ijm         ! Size of interior of v1 through v5 arrays.
    integer   :: ijmn        ! Size of interior of alpha cv arrays.
 #if (WRF_CHEM == 1)
-   integer   :: ma, mb      ! Max anthro and bioburn time coordinates
-   integer   :: ic          ! chem loop iterator
+   integer   :: ic, offset
 #endif
 
 #ifdef NORESHAPE
@@ -296,14 +294,14 @@ subroutine da_vv_to_cv(vv, xp, mzs, nmzs, cv_size, rcv &
    end if
 
 #if (WRF_CHEM == 1)
-   if (present(mzs_chem) .and. present(nmzs_chem) .and. present(vch)) then
+   if (present(mzs_chem) .and. present(vch)) then
       ix = ie-is+1
       jy = je-js+1
-      offset = -PARAM_FIRST_SCALAR+1
+      offset = 1
 
-!      if ( num_chem >= PARAM_FIRST_SCALAR ) then
+!      if ( num_scalechem >= PARAM_FIRST_SCALAR ) then
 !         mz = mzs_chem(offset)
-!         do ic = PARAM_FIRST_SCALAR, num_chem
+!         do ic = PARAM_FIRST_SCALAR, num_scalechem
 !            ijm = ix * jy * mz
 !            cv_s = cv_e + 1
 !            cv_e = cv_s + ijm - 1

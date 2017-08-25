@@ -86,7 +86,7 @@ subroutine da_minimise_lz(grid, config_flags,            &
    ghat      = - ghat0
    beta(0)   = SQRT(da_dot_cv(cv_size, ghat, ghat, grid, be%cv_mz, be%ncv_mz &
 #if (WRF_CHEM == 1)
-               ,be%cv_mz_chem, be%ncv_mz_chem &
+               ,be%cv_mz_chem &
 #endif
                , jp_start, jp_end))
    qhat(:,0) = 0.0
@@ -113,7 +113,7 @@ subroutine da_minimise_lz(grid, config_flags,            &
     !----------------------------------------------------------------------------------------
       alpha(iter) = da_dot_cv(cv_size, qhat(:,iter), fhat, grid, be%cv_mz, be%ncv_mz &
 #if (WRF_CHEM == 1)
-               ,be%cv_mz_chem, be%ncv_mz_chem &
+               ,be%cv_mz_chem &
 #endif
                , jp_start, jp_end)
 
@@ -121,7 +121,7 @@ subroutine da_minimise_lz(grid, config_flags,            &
       do i = iter, 1, -1
          gdot = da_dot_cv(cv_size, ghat, qhat(:,i), grid, be%cv_mz, be%ncv_mz &
 #if (WRF_CHEM == 1)
-               ,be%cv_mz_chem, be%ncv_mz_chem &
+               ,be%cv_mz_chem &
 #endif
                , jp_start, jp_end)
          ghat = ghat - gdot * qhat(:,i)
@@ -129,7 +129,7 @@ subroutine da_minimise_lz(grid, config_flags,            &
 
       beta(iter)  = SQRT(da_dot_cv (cv_size, ghat, ghat, grid, be%cv_mz, be%ncv_mz &
 #if (WRF_CHEM == 1)
-               ,be%cv_mz_chem, be%ncv_mz_chem &
+               ,be%cv_mz_chem &
 #endif
                , jp_start, jp_end))
       
@@ -142,7 +142,7 @@ subroutine da_minimise_lz(grid, config_flags,            &
 	 xhat = rho * qhat(:,1)
          dfs  = da_dot_cv(cv_size, xhat, xhat, grid, be%cv_mz, be%ncv_mz &
 #if (WRF_CHEM == 1)
-               ,be%cv_mz_chem, be%ncv_mz_chem &
+               ,be%cv_mz_chem &
 #endif
                , jp_start, jp_end)
          dfsmax = dfs
@@ -154,7 +154,7 @@ subroutine da_minimise_lz(grid, config_flags,            &
 	 xhat    = xhat + rho*c
          dfs     = da_dot_cv(cv_size, rho*c, rho*c, grid, be%cv_mz, be%ncv_mz &
 #if (WRF_CHEM == 1)
-               ,be%cv_mz_chem, be%ncv_mz_chem &
+               ,be%cv_mz_chem &
 #endif
                , jp_start, jp_end)
          if (dfs > dfsmax) dfsmax = dfs
@@ -180,7 +180,7 @@ subroutine da_minimise_lz(grid, config_flags,            &
     !-----------------------------------
       j_total = j0_total + 0.5 * da_dot_cv(cv_size,ghat0,xhat,grid,be%cv_mz,be%ncv_mz &
 #if (WRF_CHEM == 1)
-               ,be%cv_mz_chem, be%ncv_mz_chem &
+               ,be%cv_mz_chem &
 #endif
                ,jp_start,jp_end)
       write(unit=stdout,fmt='(A)') 'Iter     Cost Function       Info Content'
@@ -234,7 +234,7 @@ subroutine da_minimise_lz(grid, config_flags,            &
    write(unit=stdout,fmt=15) iter, j_cost%total , &
                              SQRT(da_dot_cv(cv_size, ghat, ghat, grid, be%cv_mz, be%ncv_mz &
 #if (WRF_CHEM == 1)
-               ,be%cv_mz_chem, be%ncv_mz_chem &
+               ,be%cv_mz_chem &
 #endif
                , jp_start, jp_end))
 15  format('Final: ',I3,' iter, J=',1PD15.8,', g=',1PD15.8)

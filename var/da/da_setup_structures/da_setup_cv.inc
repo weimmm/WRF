@@ -147,7 +147,7 @@ subroutine da_setup_cv(be)
       ij = iy * jx              ! cv space size same as state space size
 
 !      be % cv % sizechem (:) = 0
-!      do ic = PARAM_FIRST_SCALAR, num_chem
+!      do ic = PARAM_FIRST_SCALAR, num_scalechem
 !         be % cv % sizechem (ic) = ij * be % alpha_chem(ic) % mz
 !      end do
 !      be % cv % size_jb = be % cv % size_jb + sum( be % cv % sizechem (:) )

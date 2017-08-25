@@ -1,6 +1,6 @@
 real function da_dot_cv(cv_size, x, y, grid, mzs, nmzs &
 #if (WRF_CHEM == 1)
-       , mzs_chem, nmzs_chem &
+       , mzs_chem &
 #endif
        , jp_start, jp_end)
 
@@ -22,8 +22,7 @@ real function da_dot_cv(cv_size, x, y, grid, mzs, nmzs &
    integer,          intent(in) :: nmzs              ! number of mz
    integer,          intent(in) :: mzs(nmzs)         ! mz for each variable
 #if (WRF_CHEM == 1)
-   integer,          intent(in) :: nmzs_chem           ! number of mz chem
-   integer,          intent(in) :: mzs_chem(nmzs_chem) ! mz for each chem variable
+   integer,          intent(in) :: mzs_chem(:) ! mz for each chem variable
 #endif
                                                    ! (to identify 2D arrays)
    integer, optional,intent(in) :: jp_start, jp_end
@@ -69,12 +68,12 @@ real function da_dot_cv(cv_size, x, y, grid, mzs, nmzs &
 
       call da_cv_to_global(cv_size, cv_size_domain, xx, grid, mzs, nmzs, xg &
 #if (WRF_CHEM == 1)
-                           , mzs_chem, nmzs_chem &
+                           , mzs_chem &
 #endif
                           )
       call da_cv_to_global(cv_size, cv_size_domain, yy, grid, mzs, nmzs, yg &
 #if (WRF_CHEM == 1)       
-                           , mzs_chem, nmzs_chem &
+                           , mzs_chem &
 #endif                    
                           )
 

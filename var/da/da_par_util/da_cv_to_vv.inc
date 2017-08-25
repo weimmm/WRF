@@ -1,6 +1,6 @@
 subroutine da_cv_to_vv (cv_size, rcv, mzs, nmzs, vv &
 #if (WRF_CHEM == 1)
-                        ,mzs_chem, nmzs_chem, vch &
+                        ,mzs_chem, vch &
 #endif
                         )
    !---------------------------------------------------------------------------
@@ -15,9 +15,8 @@ subroutine da_cv_to_vv (cv_size, rcv, mzs, nmzs, vv &
    integer,        intent(in)    :: mzs(nmzs)   ! Background error structure levels.
    type (vp_type), intent(inout) :: vv          ! Grdipt/EOF cv_array.
 #if (WRF_CHEM == 1)
-   integer, optional, intent(in)    :: nmzs_chem             ! chem number of cv for mz
-   integer, optional, intent(in)    :: mzs_chem(nmzs_chem)   ! chem Background error structure levels.
-   type (xch_type), optional, intent(inout) :: vch          ! Grdipt/EOF cv_array.
+   integer, optional, intent(in)    :: mzs_chem(:)   ! chem Background error structure levels.
+   type (xch_type), optional, intent(inout) :: vch   ! Grdipt/EOF cv_array.
 #endif
 
    integer   :: is,ie       ! Local grid range in y coordinate.
@@ -165,18 +164,18 @@ subroutine da_cv_to_vv (cv_size, rcv, mzs, nmzs, vv &
    end if
 
 #if (WRF_CHEM == 1)
-   if (present(mzs_chem) .and. present(nmzs_chem) .and. present(vch)) then
+   if (present(mzs_chem) .and. present(vch)) then
       ix = ie-is+1
       jy = je-js+1
       offset = 1
 
-!      if ( num_chem >= PARAM_FIRST_SCALAR ) then
+!      if ( num_scalechem >= PARAM_FIRST_SCALAR ) then
 !         mz = mzs_chem(offset)
-!         do ic = PARAM_FIRST_SCALAR, num_chem
+!         do ic = PARAM_FIRST_SCALAR, num_scalechem
 !            ijm = ix * jy * mz
 !            cv_s = cv_e + 1
 !            cv_e = cv_s + ijm - 1
-!            vch % alpha_chem(is:ie,js:je,1:ma,ic) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, ma/))
+!            vch % alpha_chem(is:ie,js:je,1:mz,ic) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, mz/))
 !         end do
 !         offset = offset + 1
 !      end if
@@ -187,7 +186,7 @@ subroutine da_cv_to_vv (cv_size, rcv, mzs, nmzs, vv &
             ijm = ix * jy * mz
             cv_s = cv_e + 1
             cv_e = cv_s + ijm - 1
-            vch % alpha_ant(is:ie,js:je,1:ma,ic) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, ma/))
+            vch % alpha_ant(is:ie,js:je,1:mz,ic) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, mz/))
          end do
          offset = offset + 1
       end if
@@ -198,7 +197,7 @@ subroutine da_cv_to_vv (cv_size, rcv, mzs, nmzs, vv &
             ijm = ix * jy * mz
             cv_s = cv_e + 1
             cv_e = cv_s + ijm - 1
-            vch % alpha_bb(is:ie,js:je,1:mb,ic) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, mb/))
+            vch % alpha_bb(is:ie,js:je,1:mz,ic) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, mz/))
          end do
          offset = offset + 1
       end if
@@ -209,7 +208,7 @@ subroutine da_cv_to_vv (cv_size, rcv, mzs, nmzs, vv &
 !            ijm = ix * jy * mz
 !            cv_s = cv_e + 1
 !            cv_e = cv_s + ijm - 1
-!            vch % alpha_bio(is:ie,js:je,1:mb,ic) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, mb/))
+!            vch % alpha_bio(is:ie,js:je,1:mz,ic) = RESHAPE(rcv(cv_s:cv_e),(/ix, jy, mz/))
 !         end do
 !         offset = offset + 1
 !      end if

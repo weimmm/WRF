@@ -27,7 +27,7 @@ subroutine da_setup_be_chem(grid, be)
    offset = 1
 
 !   !! CHEM IC
-!   if ( num_chem >= PARAM_FIRST_SCALAR ) then
+!   if ( num_scalechem >= PARAM_FIRST_SCALAR ) then
 !      mz = xb % mkz
 !      be % cv_mz_chem(offset) = mz
 !      offset = offset+1
@@ -39,7 +39,7 @@ subroutine da_setup_be_chem(grid, be)
 !         allocate ( chem_rf_lengthscale( be % alpha_chem(PARAM_FIRST_SCALAR) % mz) )
 !         allocate ( chem_rf_scale_factor( be % alpha_chem(PARAM_FIRST_SCALAR) % mz) )
 !         chem_rf_lengthscale(:) = rf_lengthscale_chem / grid%dx; !Non-dimensionalized from meters
-!         do ic = PARAM_FIRST_SCALAR, num_chem
+!         do ic = PARAM_FIRST_SCALAR, num_scalechem
 !            call da_calculate_rf_factors ( chem_rf_lengthscale, be % alpha_chem(ic) % rf_alpha (:), &
 !                                           chem_rf_scale_factor (:) )
 !
