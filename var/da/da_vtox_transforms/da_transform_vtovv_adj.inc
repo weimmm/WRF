@@ -1,4 +1,8 @@
-subroutine da_transform_vtovv_adj(grid, cv_size, be, cv, vv)
+subroutine da_transform_vtovv_adj(grid, cv_size, be, cv, vv &
+#if (WRF_CHEM == 1)
+                        ,vch &
+#endif
+                        )
 
    !-----------------------------------------------------------------------
    ! Purpose: TBD
@@ -11,6 +15,11 @@ subroutine da_transform_vtovv_adj(grid, cv_size, be, cv, vv)
    type(be_type), intent(in)    :: be   ! Background error structure.
    real,          intent(inout) :: cv(cv_size)   ! control variables.
    type(vp_type), intent(inout) :: vv   ! Grid point/EOF control var.
+
+#if (WRF_CHEM == 1)
+   type(xch_type), optional, intent(inout) :: vch   ! Grid point/EOF equivalent.
+   integer :: ic
+#endif
 
    integer :: s(4)   ! Index bounds into arrays.
    integer :: n      ! Loop counter.
@@ -215,11 +224,45 @@ subroutine da_transform_vtovv_adj(grid, cv_size, be, cv, vv)
       endif
    endif
 
+#if (WRF_CHEM == 1)
+   ! [2.9] Transform emission control variables
+
+   do ic = PARAM_FIRST_SCALAR, num_scaleant
+      mz = be % alpha_ant_chem (ic) % mz
+      if( use_rf .and. mz > 0 ) then
+         call da_transform_through_rf_adj(grid, mz, be % alpha_ant_chem (ic) % rf_alpha, &
+                                                be % alpha_ant_chem (ic) % val, &
+                                                vch % alpha_ant (:,:,:,ic) )
+      elseif( .not. use_rf ) then
+         call da_error(__FILE__,__LINE__,(/"no da_transform_through_wavelet for alpha_ant"/))
+      endif
+   end do
+
+   do ic = PARAM_FIRST_SCALAR, num_scalebb
+      mz = be % alpha_bb_chem (ic) % mz
+      if( use_rf .and. mz > 0 ) then
+         call da_transform_through_rf_adj(grid, mz, be % alpha_bb_chem (ic) % rf_alpha, &
+                                                be % alpha_bb_chem (ic) % val, &
+                                                vch % alpha_bb (:,:,:,ic) )
+      elseif( .not. use_rf ) then
+         call da_error(__FILE__,__LINE__,(/"no da_transform_through_wavelet for alpha_bb"/))
+      endif
+   end do
+#endif
+
    if( use_rf )then
       !-------------------------------------------------------------------------
       ! [1.0] Fill 1D cv array from 3-dimensional vv arrays.
       !-------------------------------------------------------------------------
-      call da_vv_to_cv( vv, grid%xp, be%cv_mz, be%ncv_mz, cv_size, cv)
+#if (WRF_CHEM == 1)
+      if (present(vch)) then
+         call da_vv_to_cv( vv, grid%xp, be%cv_mz, be%ncv_mz, cv_size, cv, be%cv_mz_chem, vch)
+      else
+#endif
+         call da_vv_to_cv( vv, grid%xp, be%cv_mz, be%ncv_mz, cv_size, cv)
+#if (WRF_CHEM == 1)
+      end if
+#endif
    endif
 
    if (trace_use) call da_trace_exit("da_transform_vtovv_adj")

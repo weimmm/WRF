@@ -6,6 +6,10 @@ module da_control
 
    use module_driver_constants, only : max_domains, max_eta, max_moves, max_bogus, &
                                        max_outer_iterations, max_instruments, max_plevs, &
+                                       max_zlevs, &
+#if (WRF_CHEM == 1)
+                                       max_trackchem, &
+#endif
                                        max_ocean, num_ob_indexes
 
    implicit none
@@ -510,7 +514,14 @@ module da_control
    integer, parameter :: tamdar    = 26
    integer, parameter :: tamdar_sfc = 27
    integer, parameter :: rain      = 28
-   integer, parameter :: gpseph    = 29
+!!!<<<<<<< HEAD
+!!!   integer, parameter :: gpseph    = 29
+!!!=======
+#if (WRF_CHEM == 1)
+   integer, parameter :: chem_surf = 29
+   integer, parameter :: chem_acft = 30
+#endif
+!!!>>>>>>> wrfda_chem_Merge391
 
    character(len=14), parameter :: obs_names(num_ob_indexes) = (/ &
       "sound         ", &
@@ -540,8 +551,16 @@ module da_control
       "mtgirs        ", &
       "tamdar        ", &
       "tamdar_sfc    ", &
-      "rain          ", &
-      "gpseph        "  &
+!<<<<<<< HEAD
+!      "rain          ", &
+!      "gpseph        "  &
+!=======
+!      "rain          " &
+#if (WRF_CHEM == 1)
+     ,"chem_surf     " &
+     ,"chem_acft     " &
+#endif
+!>>>>>>> wrfda_chem_Merge391
    /)
 
    logical :: pseudo_tpw

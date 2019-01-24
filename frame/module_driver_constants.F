@@ -84,7 +84,16 @@ MODULE module_driver_constants
 
    !  The maximum number of obs indexes (for conventional DA obs) 
 
-   INTEGER , PARAMETER :: num_ob_indexes  =   29
+!!!<<<<<<< HEAD
+!!!   INTEGER , PARAMETER :: num_ob_indexes  =   29
+!!!=======
+#if (WRF_CHEM == 1)
+   INTEGER , PARAMETER :: num_ob_indexes  =   30
+#else
+   INTEGER , PARAMETER :: num_ob_indexes  =   28
+#endif
+
+!!!>>>>>>> wrfda_chem_Merge391
 
    !  The maximum number of bogus storms
 

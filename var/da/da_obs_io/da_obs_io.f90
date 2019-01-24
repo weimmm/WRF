@@ -34,6 +34,13 @@ module da_obs_io
       gpsro_drift, max_gpseph_input, use_gpsephobs, gpseph, gpseph_loadbalance, kds, kde, kts, kte, &
       use_radar_rhv, use_radar_rqv
 
+#if (WRF_CHEM == 1)
+   use da_control, only : num_ts, num_surf_obs, num_acft_obs, num_platform, chem_surf, chem_acft, &
+      use_chem_surfobs, use_chem_acftobs, time_step
+   use module_state_description, only : num_chem_surf, num_chem_acft
+   use module_dm, only : wrf_dm_sum_reals
+#endif
+
    use da_define_structures, only : iv_type, multi_level_type, multi_level_type_BUFR, &
       radar_multi_level_type, y_type, field_type, each_level_type, &
       radar_each_level_type, info_type, model_loc_type,gpsref_type, rain_single_level_type, rain_each_type, &
@@ -78,6 +85,9 @@ contains
 #include "da_scan_obs_radar.inc"
 #include "da_scan_obs_rain.inc" 
 #include "da_read_obs_rain.inc"
+#if (WRF_CHEM == 1)
+#include "da_read_obs_chem.inc"
+#endif
 #include "da_read_errfac.inc"
 #include "da_use_obs_errfac.inc"
 #include "da_write_obs.inc"

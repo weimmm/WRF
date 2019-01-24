@@ -71,6 +71,10 @@ subroutine da_setup_obs_structures( grid, ob, iv, j_cost)
       use_radarobs         = .false.
       use_radar_rv         = .false.
       use_radar_rf         = .false.
+#if (WRF_CHEM == 1)
+      use_chem_surfobs     = .false.
+      use_chem_acftobs     = .false.
+#endif
       ob_format = ob_format_ascii
    end if
 
@@ -151,6 +155,10 @@ subroutine da_setup_obs_structures( grid, ob, iv, j_cost)
       use_radarobs         = .false.
       use_radar_rv         = .false.
       use_radar_rf         = .false.
+#if (WRF_CHEM == 1)
+      use_chem_surfobs     = .false.
+      use_chem_acftobs     = .false.
+#endif
    end if
 
    if ( use_pseudo_rad ) then
@@ -289,6 +297,13 @@ subroutine da_setup_obs_structures( grid, ob, iv, j_cost)
       call da_setup_obs_structures_rain (grid, ob, iv) 
    end if
 
+#if (WRF_CHEM == 1)
+   if ( (use_chem_surfobs .or. use_chem_acftobs) .and. var4d ) then
+      call da_message((/'Using ASCII format chem observation input'/))
+      call da_setup_obs_structures_chem (grid, ob, iv) 
+   end if
+#endif
+
    if (use_rad) then
 #if defined(CRTM) || defined(RTTOV)
       ! Radiance files can only be in BUFR
@@ -312,7 +327,11 @@ subroutine da_setup_obs_structures( grid, ob, iv, j_cost)
    do i=1,num_fgat_time
       write(unit=stdout, fmt='(3x,a,i2)') 'ob time ', i
       do j=1,num_ob_indexes
-         if(j.eq.27)cycle 
+         if(j.eq.27 &
+#if (WRF_CHEM == 1)
+            .or. j.eq.29 .or. j.eq.30 &
+#endif
+         )cycle
          if (use_gpsztdobs .and.obs_names(j) == 'gpspw         ' ) then
             ob_name = 'gpsztd        '
          else

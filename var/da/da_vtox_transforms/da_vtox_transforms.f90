@@ -15,7 +15,10 @@ module da_vtox_transforms
 #endif
    use module_domain, only : xb_type, xpose_type, ep_type, vp_type, x_type, domain, get_ijk_from_grid
    use module_domain, only : x_subtype
-
+#if (WRF_CHEM == 1)
+   use module_domain, only : xch_type
+   use module_state_description, only : num_scaleant, num_scalebb, PARAM_FIRST_SCALAR
+#endif
 #ifdef A2C
    use da_control, only : trace_use, var4d, cos_xls, cos_xle, sin_xle, sin_xls, pi, global, &
       vertical_ip,alphacv_method,use_ssmitbobs,use_rainobs, &
@@ -27,6 +30,9 @@ module da_vtox_transforms
       alphacv_method_vp, alphacv_method_xa, vertical_ip_0, trace_use_dull,&
       ids,ide,jds,jde,kds,kde, ims,ime,jms,jme,kms,kme, cv_options_hum, &
       its,ite,jts,jte,kts,kte, ips,ipe,jps,jpe,kps,kpe, cv_size, cv_options, &
+#if (WRF_CHEM == 1)
+      num_ant_steps, num_bb_steps, temporal_corr, &
+#endif
       use_background_errors
 #else
    use da_control, only : trace_use, var4d, ims,ime,jms,jme,kms,kme,jds,jde,kds,kde, &
@@ -39,6 +45,9 @@ module da_vtox_transforms
       ids, ide, stdout, use_rad, crtm_cloud, vert_corr_2, fg_format_wrf_arw_global, &
       alphacv_method_vp, alphacv_method_xa, vertical_ip_0, trace_use_dull, &
       ips,ipe,jps,jpe,kps,kpe, cv_size, cv_options, cv_options_hum, cloud_cv_options, &
+#if (WRF_CHEM == 1)
+      num_ant_steps, num_bb_steps, temporal_corr, &
+#endif
       use_background_errors,do_normalize,use_rf,len_scaling1, len_scaling2, len_scaling3, len_scaling4, &
       len_scaling5, len_scaling6, len_scaling7, len_scaling8, len_scaling9, len_scaling10, len_scaling11
 #endif
@@ -51,8 +60,12 @@ module da_vtox_transforms
                           ips_int,ipe_int,jps_int,jpe_int,kps_int,kpe_int
    use da_control, only : dual_res_type, aens_locs
    use da_control, only : c1h, c2h, use_cv_w, alpha_hydrometeors
-
    use da_define_structures, only : be_type, xbx_type,da_zero_vp_type,da_zero_x
+
+#if (WRF_CHEM == 1)
+   use da_define_structures, only : da_zero_xch_type
+#endif
+
    use da_dynamics, only : da_psichi_to_uv,da_psichi_to_uv_adj
    use da_physics, only : da_uvprho_to_w_lin,da_uvprho_to_w_adj, &
       da_pt_to_rho_adj, da_pt_to_rho_lin,da_moist_phys_lin, &
@@ -97,6 +110,10 @@ module da_vtox_transforms
 #include "da_transform_vptovv.inc"
 #include "da_transform_vpatox.inc"
 #include "da_transform_vpatox_adj.inc"
+#if (WRF_CHEM == 1)
+#include "da_transform_vchtox.inc"
+#include "da_transform_vchtox_adj.inc"
+#endif
 #include "da_vertical_transform.inc"
 #include "da_get_vpoles.inc"
 #include "da_get_spoles.inc"
