@@ -197,8 +197,9 @@ module da_minimisation
    USE module_io_wrf, only : auxinput6_only, auxhist18_alarm
 #endif
 
-   implicit none
+   USE module_io_wrf, only : auxinput6_only, auxhist18_alarm !!! add !!!
 
+   implicit none
 #ifdef DM_PARALLEL
     include 'mpif.h'
 #endif

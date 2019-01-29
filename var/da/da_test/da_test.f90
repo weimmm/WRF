@@ -70,7 +70,7 @@ module da_test
    use da_statistics, only : da_correlation_coeff1d,da_correlation_coeff2d
    use da_tools_serial, only : da_get_unit,da_free_unit
    use da_tracing, only : da_trace_entry,da_trace_exit
-   use da_transfer_model, only : da_transfer_wrftltoxa,da_transfer_xatowrftl, &
+   use da_transfer_model, only : da_transfer_wrftltoxa,da_transfer_xatowrftl, da_transfer_wrftoxb, &
       da_transfer_xatowrftl_adj,da_transfer_wrftltoxa_adj,da_transfer_wrftoxb
    ! Don't use, as we pass a 3D array into a 1D one
    ! use da_wrf_interfaces, only : wrf_dm_bcast_real

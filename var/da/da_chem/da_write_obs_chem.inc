@@ -42,7 +42,8 @@ subroutine da_write_obs_chem ( iv, ob, it )
          if (iostat /= 0) then
             write(unit=message(1),fmt='(A,I5)') "Error message: ",iostat
             call da_warning(__FILE__,__LINE__,message(1:1))
-            call da_wrf_error_fatal('Error opening surface Hx_y file')
+!!! add !!!            call da_wrf_error_fatal('Error opening surface Hx_y file')
+            call wrf_message('Error opening surface Hx_y file')  !!! add !!!
          end if   
 
          allocate ( dummy_surf (2,num_chem_surf-1) )
@@ -74,7 +75,8 @@ subroutine da_write_obs_chem ( iv, ob, it )
             if (iostat /= 0 ) then
                write(unit=message(1),fmt='(A,I5)') "Error message: ",iostat
                call da_warning(__FILE__,__LINE__,message(1:1))
-               call da_wrf_error_fatal('Error writing surface chem Hx_y')
+!!! add !!!               call da_wrf_error_fatal('Error writing surface chem Hx_y')
+               call wrf_message('Error writing surface chem Hx_y')  !!! add !!!
             end if
          end do
 
@@ -105,7 +107,8 @@ subroutine da_write_obs_chem ( iv, ob, it )
          if (iostat /= 0) then
             write(unit=message(1),fmt='(A,I5)') "Error message: ",iostat
             call da_warning(__FILE__,__LINE__,message(1:1))
-            call da_wrf_error_fatal('Error opening aircraft Hx_y file')
+!!! add !!!            call da_wrf_error_fatal('Error opening aircraft Hx_y file')
+            call wrf_message('Error opening aircraft Hx_y file')  !!! add !!!
          end if   
 
          allocate ( dummy_acft (2,num_chem_acft-1) )
@@ -140,7 +143,8 @@ subroutine da_write_obs_chem ( iv, ob, it )
                if (iostat /= 0 ) then
                   write(unit=message(1),fmt='(A,I5)') "Error message: ",iostat
                   call da_warning(__FILE__,__LINE__,message(1:1))
-                  call da_wrf_error_fatal('Error writing aircraft chem Hx_y')
+!!! add !!!                  call da_wrf_error_fatal('Error writing aircraft chem Hx_y')
+                  call wrf_message('Error writing aircraft chem Hx_y')  !!! add !!!
                end if
             end do
          end do

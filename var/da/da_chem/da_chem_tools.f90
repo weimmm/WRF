@@ -32,23 +32,30 @@ module da_chem_tools
 !!WRFPLUS domain type
 !   use module_wrf_top, only: domain
 !WRFPLUS model grid is usable only after da_nl_model(1) has been called
-   use da_4dvar, only: model_grid, kj_swap, da_nl_model, da_init_model_input
+!!!   use da_4dvar, only: model_grid, kj_swap, da_nl_model, da_init_model_input
 !WRFDA domain type
    use module_domain, only : domain !, head_grid
    use module_configure, only : grid_config_rec_type
 
+!!!   include 'da_4dvar_io.inc'  !!! add !!!
+   use module_domain, only :  wrfu_timeinterval, head_grid !!! add !!!
+   use da_control, only : trace_use_dull
    implicit none
 
 #ifdef DM_PARALLEL
     include 'mpif.h'
 #endif
 
+   type (domain) :: model_grid !!! add !!!
+   type (grid_config_rec_type)            :: config_flags !!! add !!!
    private :: da_dot, da_dot_cv
 
 contains
 
 #if (WRF_CHEM == 1)
 
+#include "da_init_model_input.inc"  !!! add !!!
+#include "kj_swap_test.inc"   !!! add !!!
 #include "da_hdgn.inc"
 #include "da_dgn.inc"
 #include "da_evaluate_j.inc"

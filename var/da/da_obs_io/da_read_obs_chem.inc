@@ -88,7 +88,8 @@ subroutine da_read_obs_chem(grid, iv)
          if (iostat /= 0) then
             write(unit=message(1),fmt='(A,I5)') "Error message: ",iostat
             call da_warning(__FILE__,__LINE__,message(1:1))
-            call da_wrf_error_fatal('Error opening surface chem obs file')
+!!! add !!!            call da_wrf_error_fatal('Error opening surface chem obs file')
+            call wrf_message('Error opening surface chem obs file')  !!! add !!!
          end if   
 
          write(dummychar,fmt='(I0)') num_chem_surf-1
@@ -120,7 +121,8 @@ subroutine da_read_obs_chem(grid, iv)
             if (iostat /= 0 .OR. dummyi < 0) then
                write(unit=message(1),fmt='(A,I5)') "Error message: ",iostat
                call da_warning(__FILE__,__LINE__,message(1:1))
-               call da_wrf_error_fatal('Error reading surface chem obs')
+!!! add !!!               call da_wrf_error_fatal('Error reading surface chem obs')
+               call wrf_message('frror reading surface chem obs') !!! add !!!
             end if
          end do
 
@@ -148,7 +150,8 @@ subroutine da_read_obs_chem(grid, iv)
             if ( nrepeat .ne. sum(repeat_obs) ) then
                write(unit=message(1),fmt='(A,2I5)') "Error finding co-located surface obs.: ",nrepeat,sum(repeat_obs)
                call da_warning(__FILE__,__LINE__,message(1:1))
-               call da_wrf_error_fatal('Error reading surface chem obs')
+!!! add !!!               call da_wrf_error_fatal('Error reading surface chem obs')
+               call wrf_message('Error reading surface chem obs')  !!! add !!!
             end if
          end if
       end if
@@ -285,7 +288,8 @@ subroutine da_read_obs_chem(grid, iv)
          if (iostat /= 0) then
             write(unit=message(1),fmt='(A,I5)') "Error message: ",iostat
             call da_warning(__FILE__,__LINE__,message(1:1))
-            call da_wrf_error_fatal('Error opening aircraft chem obs file')
+!!! add !!!            call da_wrf_error_fatal('Error opening aircraft chem obs file')
+                       call wrf_message('Error opening aircraft chem obs file')  !!! add !!!
          end if   
 
          write(dummychar,fmt='(I0)') num_chem_acft-1
@@ -302,7 +306,8 @@ subroutine da_read_obs_chem(grid, iv)
             if (iostat /= 0 .OR. dummyi < 0) then
                write(unit=message(1),fmt='(A,I5)') "Error message: ",iostat
                call da_warning(__FILE__,__LINE__,message(1:1))
-               call da_wrf_error_fatal('Error reading aircraft chem obs')
+!!! add !!!               call da_wrf_error_fatal('Error reading aircraft chem obs')
+               call wrf_message('Error reading aircraft chem obs')  !!! add !!!
             end if 
          end do
          close(iunit)
@@ -405,7 +410,8 @@ subroutine da_read_obs_chem(grid, iv)
          if (iostat /= 0) then
             write(unit=message(1),fmt='(A,I5)') "Error message: ",iostat
             call da_warning(__FILE__,__LINE__,message(1:1))
-            call da_wrf_error_fatal('Error opening aircraft chem obs variance file')
+!!! add !!!            call da_wrf_error_fatal('Error opening aircraft chem obs variance file')
+            call wrf_message('Error opening aircraft chem obs variance file') !!! add !!!
          end if   
 
          write(dummychar,fmt='(I0)') num_chem_acft-1
@@ -416,7 +422,8 @@ subroutine da_read_obs_chem(grid, iv)
             if (iostat /= 0 .OR. dummyi < 0) then
                write(unit=message(1),fmt='(A,I5)') "Error message: ",iostat
                call da_warning(__FILE__,__LINE__,message(1:1))
-               call da_wrf_error_fatal('Error reading aircraft chem obs variance')
+!!! add !!!               call da_wrf_error_fatal('Error reading aircraft chem obs variance')
+               call wrf_message('Error reading aircraft chem obs variance')  !!! add !!!
             end if 
          end do
          close(iunit)

@@ -9,6 +9,33 @@ use da_control, only : comm, var4d_bin, var4d_lbc, trace_use_dull, num_fgat_time
 #endif
                        checkpoint_interval, write_checkpoints, cycle_interval
 
+
+USE module_domain, ONLY : domain, wrfu_timeinterval,head_grid !!! add !!!
+
+!!! add !!!
+use module_configure, only :  model_to_grid_config_rec, grid_config_rec_type, model_config_rec
+
+type (domain), pointer :: model_grid
+!!!type (grid_config_rec_type) :: model_config_flags
+
+character*256 :: timestr
+
+! Define some variables to save the NL physical option
+integer :: original_mp_physics, original_ra_lw_physics, original_ra_sw_physics, &
+           original_sf_sfclay_physics, original_bl_pbl_physics, original_cu_physics, &
+           original_ifsnow, original_icloud, original_mp_physics_ad, &
+           original_sf_surface_physics, original_interval_seconds, original_restart_interval
+real    :: original_cudt
+
+REAL , DIMENSION(:,:,:) , ALLOCATABLE  :: ubdy3dtemp1 , vbdy3dtemp1 , tbdy3dtemp1 , pbdy3dtemp1 , qbdy3dtemp1
+REAL , DIMENSION(:,:,:) , ALLOCATABLE  :: ubdy3dtemp2 , vbdy3dtemp2 , tbdy3dtemp2 , pbdy3dtemp2 , qbdy3dtemp2
+REAL , DIMENSION(:,:,:) , ALLOCATABLE  :: mbdy2dtemp1,  mbdy2dtemp2 , wbdy3dtemp1 , wbdy3dtemp2
+
+REAL , DIMENSION(:,:,:) , ALLOCATABLE  :: u6_2, v6_2, w6_2, t6_2, ph6_2, p6
+REAL , DIMENSION(:,:,:,:) , ALLOCATABLE  :: moist6
+REAL , DIMENSION(:,:) , ALLOCATABLE  :: mu6_2, psfc6
+
+
 #ifdef VAR4D
 
 use module_streams, only : MAX_WRF_ALARMS
@@ -68,6 +95,7 @@ contains
 #include "da_init_model_input.inc"
 #endif
 #endif
+
 
 end module da_4dvar
 

@@ -10,6 +10,7 @@ use module_domain, only : head_grid
 use da_reporting, only : da_message,da_warning,message
 !   use da_wrf_interfaces, only : wrf_debug
 
+use module_domain_type, only : domain  !!! add !!!
 #if (WRF_CHEM == 1)
 use da_control, only : rootproc,ierr,comm,num_surf_obs,num_acft_obs,num_ts, &
       fails_error_max, trace_use, &
@@ -44,9 +45,9 @@ use da_tools, only : da_max_error_qc, da_residual
 
 !   use da_wrf_interfaces, only: da_wrf_get_dm_communicator
 
-!#ifdef VAR4D
+#ifdef VAR4D
 use module_wrf_top, only: domain
-!#endif
+#endif
 
    implicit none
 

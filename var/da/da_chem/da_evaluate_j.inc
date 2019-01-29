@@ -130,8 +130,8 @@ subroutine da_evaluate_j(grid, config_flags, cv_size, cv_size_jb, xbx, be, iv, x
 
    ! Relinearize
    if ( checkpoint_interval .gt. 0 ) write_checkpoints = 2
-   call da_nl_model(-1)
-   if ( checkpoint_interval .gt. 0 ) write_checkpoints = 0
+!!! add !!!   call da_nl_model(-1)
+!!! add !!!   if ( checkpoint_interval .gt. 0 ) write_checkpoints = 0
 
    ! Calculate new cost function
    call da_retrieve_chem_hx( model_grid, iv )

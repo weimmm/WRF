@@ -1099,7 +1099,7 @@
       ! Write nonlinear model checkpoint trajectories to disk and evaluate online
       ! observation operators
       if(checkpoint_interval .gt.0 ) write_checkpoints = 1
-      call da_nl_model(1)
+!!! add !!!      call da_nl_model(1)
       if(checkpoint_interval .gt.0 ) write_checkpoints = 0
 
      if (config_flags%chem_obs_cost) then
@@ -1115,7 +1115,7 @@
          if (config_flags%chem_obs_cost) then
             call da_calculate_chem_forcing_ad ( 1, model_grid, iv )
          end if
-         call da_ad_model
+!!! add !!!         call da_ad_model
       end if
 
    end if

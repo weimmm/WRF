@@ -157,6 +157,7 @@ module da_wrfvar_top
 
    use da_netcdf_interface, only : da_get_var_2d_real_cdf
 
+   use module_streams, only : MAX_WRF_ALARMS  !!! add !!!
    implicit none
 
    integer :: loop, levels_to_process
@@ -169,6 +170,8 @@ module da_wrfvar_top
 
    integer :: domain_id , fid , oid , idum1 , idum2
 
+   type (domain), pointer :: model_grid !!! add !!!
+   integer :: original_restart_interval !!! add !!!
 #ifdef DM_PARALLEL
    integer                 :: nbytes
    integer, parameter      :: configbuflen = 4* CONFIG_BUF_LEN
@@ -183,6 +186,7 @@ module da_wrfvar_top
 
 contains
 
+!!! #include "da_nl_model.inc"  !!! add !!!
 #include "da_wrfvar_init1.inc"
 #include "da_wrfvar_init2.inc"
 #include "da_wrfvar_run.inc"

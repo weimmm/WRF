@@ -97,6 +97,7 @@ module da_transfer_model
 
    implicit none
 
+   type (domain) :: model_grid !!! add !!!
    contains
 
 #include "da_transfer_wrftoxb.inc"
